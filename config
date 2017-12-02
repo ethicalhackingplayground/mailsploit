@@ -1,0 +1,30 @@
+[Config]
+
+### Debugging ###
+debuglevel=0
+
+###############################
+### Define your credentials ###
+###############################
+email      = None
+password   = None
+
+##################
+### Mail stuff ###
+##################
+name       = None
+target     = None
+subject    = This is so funny
+
+
+####################################################
+#### YOU MIGHT NOT NEED TO CHANGE ANY OF THIS ######
+#### 	   EXCEPT THE PAYLOAD_OWNER   	      ######
+####################################################
+
+### Define your payload ###
+filename      = funny.128.pdf
+payload       = /root/funny.pdf
+payload_new   = /root/funny.128.pdf
+payload_pass  = 125%!#
+payload_owner = th3j0k3r
