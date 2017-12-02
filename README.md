@@ -17,6 +17,9 @@ Then run,
 
 > python mailsploit.py
 
+Remember to turn on less secure apps in your account to login.
+
+https://myaccount.google.com/lesssecureapps
 
 happy hacking. ;)
 
