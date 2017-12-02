@@ -17,7 +17,7 @@ Install
 
 How to use
 
-Setup your config file, replace everythin that says None with the information that is necessary.
+Setup your config file, replace everything that says None with the information that is necessary.
 
 > python mailsploit.py
 
