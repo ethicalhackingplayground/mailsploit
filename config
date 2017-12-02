@@ -12,7 +12,7 @@ password   = None
 ##################
 ### Mail stuff ###
 ##################
-name       = None
+targetName = None
 target     = None
 subject    = This is so funny
 
@@ -23,8 +23,5 @@ subject    = This is so funny
 ####################################################
 
 ### Define your payload ###
-filename      = funny.128.pdf
-payload       = /root/funny.pdf
-payload_new   = /root/funny.128.pdf
-payload_pass  = 125%!#
-payload_owner = th3j0k3r
+filename      = funny.pdf
+payload       = /root/template.pdf
