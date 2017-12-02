@@ -1,7 +1,7 @@
 # mailsploit
 Sends some one a malicious payload through smtp and starts a listener with metasploit.
 
-### Depenencies
+### Dependencies
 
 > apt-get install pdftk
 
