@@ -23,5 +23,4 @@ subject    = This is so funny
 ####################################################
 
 ### Define your payload ###
-filename      = funny.pdf
 payload       = /root/template.pdf
