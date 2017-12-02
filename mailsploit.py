@@ -12,11 +12,9 @@ import smtplib
 import ConfigParser
 import mimetypes
 import email
-import email.mime.application
 from email.MIMEText import MIMEText
 from email.MIMEMultipart import MIMEMultipart
 from email.MIMEBase import MIMEBase
-from email import encoders
 from email.utils import COMMASPACE,formatdate
 import time
 import os
@@ -49,7 +47,6 @@ def exploit ():
 	global password
 	global target
 	global subject
-	global filename
 	global payload
 	global debuglevel
 
@@ -60,7 +57,6 @@ def exploit ():
 	password = configParser.get('Config', 'password')
 	target = configParser.get('Config', 'target')
 	subject = configParser.get('Config', 'subject')
-	filename = configParser.get('Config', 'filename')
 	payload = configParser.get('Config', 'payload')
 	debuglevel = configParser.get('Config', 'debuglevel')
 
@@ -136,7 +132,7 @@ Hi """ + targetName + """,
 <br></br>
 I think I know you from school, This is so funny check this out, you will laugh so hard.
 </p>
-<a href="""+link+""">""" + link + """</a>
+<a href=""" + link +""">""" + link + """</a>
 <br>
 </br>
 </html>
