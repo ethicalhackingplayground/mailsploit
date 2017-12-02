@@ -65,7 +65,7 @@ def exploit ():
 	debuglevel = configParser.get('Config', 'debuglevel')
 
 	# Validate the input.
-	if email == 'None' or password == 'None' or target == 'None':
+	if email == 'None' or password == 'None' or target == 'None' or targetName == 'None':
 		color_print('[!] Please setup your config file.', color='red')	
 		return
 
