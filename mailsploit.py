@@ -114,7 +114,7 @@ def sendpayload (server):
 	# Encrypt the payload
 	raw_input("[ Upload it to drop box and press enter ]")
 	link = raw_input("Paste the link to your file: ")		
-
+	while len(link) == 0: link = raw_input("Paste the link to your file: ")
 
 	msg = MIMEMultipart('alternative')	
 	msg['From'] = email
@@ -122,6 +122,11 @@ def sendpayload (server):
 	msg['Date'] = formatdate(localtime = True)
 	msg['Subject'] = subject
 
+	#Example: 
+	#Convince the person. 
+	#I think I know you from school, This is so funny check this out, you will laugh so hard.
+	message = raw_input("Message: ")
+	while len(message) == 0: message = raw_input("Message: ")
 	text = """
 <html>
 <title>
@@ -130,7 +135,7 @@ Very funny
 <p>
 Hi """ + targetName + """,
 <br></br>
-I think I know you from school, This is so funny check this out, you will laugh so hard.
+""" + message + """
 </p>
 <a href=""" + link +""">""" + link + """</a>
 <br>
@@ -152,7 +157,6 @@ I think I know you from school, This is so funny check this out, you will laugh 
 		# Send the payload
 		#color_print("[*] Sending malicious payload..", color='yellow')
 		server.sendmail(email, target, msg.as_string())
-		color_print("[*] Sent.", color='green')
 		server.quit()
 		color_print("\n[*] Email sent", color='green')
 
