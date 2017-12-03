@@ -1,10 +1,6 @@
 # mailsploit
 Sends some one a malicious payload through smtp and starts a listener with metasploit.
 
-### Dependencies
-
-> apt-get install pdftk
-
 ### Install
 
 > pip install -r requirements.txt
@@ -22,4 +18,3 @@ Remember to turn on less secure apps in your account to login.
 https://myaccount.google.com/lesssecureapps
 
 happy hacking. ;)
-
