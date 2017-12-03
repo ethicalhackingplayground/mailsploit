@@ -161,7 +161,7 @@ Hi """ + targetName + """,
 		color_print("\n[*] Email sent", color='green')
 
 		# Do you want to listen for any connections.
-		listen = raw_input('Do you want to start up a listener: [Y/N]')
+		listen = raw_input('Do you want to start up a listener: [Y/N]: ')
 		if listen == 'Y' or listen == 'y' or listen == 'yes' or listen == 'Yes':	
 			color_print("[+] Starting a listener", color='blue')
 			listenForConnections()
