@@ -12,9 +12,10 @@ password   = None
 ##################
 ### Mail stuff ###
 ##################
-targetName = None
+targetName = None	
 target     = None
 subject    = This is so funny
+message    = I think I know you from school, This is so funny check this out, you will laugh so hard.
 
 
 ####################################################
@@ -23,4 +24,5 @@ subject    = This is so funny
 ####################################################
 
 ### Define your payload ###
+filename      = template.pdf
 payload       = /root/template.pdf
