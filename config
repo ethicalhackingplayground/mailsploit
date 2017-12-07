@@ -20,7 +20,6 @@ message    = I think I know you from school, This is so funny check this out, yo
 
 ####################################################
 #### YOU MIGHT NOT NEED TO CHANGE ANY OF THIS ######
-#### 	   EXCEPT THE PAYLOAD_OWNER   	      ######
 ####################################################
 
 ### Define your payload ###
