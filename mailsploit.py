@@ -5,7 +5,7 @@
 # Author: Th3J0k3r
 #
 # Purpose: to be able to send a malicious link via email
-# to gain access to somones machine.
+# to gain access to someones machine.
 #
 ############################################################
 import socket
@@ -85,7 +85,7 @@ def setup ():
 def connect():
 
 	# get the smtp server via user input.
-	color_print("[ Press enter twice to send via gmail ]", color='blue')
+	color_print("[ Press enter twice to use default settings to send via gmail ]", color='blue')
 	server = raw_input('What is the smtp server you want to connect to (eg smtp.gmail.com): ')
 	if server == '':
 		server = 'smtp.gmail.com'
