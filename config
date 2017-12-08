@@ -9,6 +9,7 @@ debuglevel=0
 email      = None
 password   = None
 
+
 ##################
 ### Mail stuff ###
 ##################
@@ -17,11 +18,3 @@ target     = None
 subject    = This is so funny
 message    = I think I know you from school, This is so funny check this out, you will laugh so hard.
 
-
-####################################################
-#### YOU MIGHT NOT NEED TO CHANGE ANY OF THIS ######
-####################################################
-
-### Define your payload ###
-filename      = template.pdf
-payload       = /root/template.pdf
