@@ -1,8 +1,5 @@
 [Config]
 
-### Debugging ###
-debuglevel=0
-
 ###############################
 ### Define your credentials ###
 ###############################
@@ -13,8 +10,8 @@ password   = None
 ##################
 ### Mail stuff ###
 ##################
-targetName = None	
-target     = None
-subject    = This is so funny
-message    = I think I know you from school, This is so funny check this out, you will laugh so hard.
-
+spoofName       = None
+targetName      = None
+targetEmail     = None 
+subject         = This is so funny
+message         = I think I know you from school, This is so funny check this out, you will laugh so hard.
