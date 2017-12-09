@@ -56,7 +56,6 @@ def setup ():
 	global email
 	global password
 	global subject
-	global debug
 	global message
 
 	configParser = ConfigParser.RawConfigParser()	
@@ -67,7 +66,6 @@ def setup ():
 	email    = configParser.get('Config', 'email')
 	password = configParser.get('Config', 'password')
 	subject = configParser.get('Config', 'subject')
-	debug = configParser.get('Config', 'debug')
 	message = configParser.get('Config', 'message')
 
 	# Validate the input.
