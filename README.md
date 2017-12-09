@@ -24,7 +24,8 @@ Then run,
 
 * You will be prompt to type paste in a link, to do this, just upload it to a free file hosting server and copy the link
 
-** https://nofile.io/  
+* Heres a free file hosting server.
+https://nofile.io/  
 
 You will be able to upload any files.
 
