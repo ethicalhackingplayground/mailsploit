@@ -22,9 +22,9 @@ Then run,
 
 > python mailsploit.py
 
->> You will be prompt to type paste in a link, to do this, just upload it to a free file hosting server and copy the link
+* You will be prompt to type paste in a link, to do this, just upload it to a free file hosting server and copy the link
 
-https://nofile.io/  
+** https://nofile.io/  
 
 You will be able to upload any files.
 
