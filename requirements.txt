@@ -1,3 +1,4 @@
 color_print
 lazyme
 ConfigParser
+yagmail
