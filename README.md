@@ -22,4 +22,8 @@ Then run,
 
 > python mailsploit.py
 
+If you use a free file hosting server like, 
+https://nofile.io/  
+You will be able to upload any file.
+
 happy hacking. ;)
