@@ -1,10 +1,28 @@
 [Config]
 
-###############################
-### Define your credentials ###
-###############################
+
+####################################
+### Define your SMTP credentials ###
+####################################
 email      = None
 password   = None
+
+########################################
+### Define your Facebook credentials ###
+########################################
+fbusername   = None
+fbpassword   = None
+
+######################
+### Facebook Stuff ###
+######################
+fbuser      = None
+fbuserID    = None
+fbmessage   = Hi Peter, We have found that your account has been accessed by multiple accounts.
+              Do you want us to do a security check, if yes, we need you to authorize your account so we can
+              have a look.
+
+
 
 
 ##################
@@ -14,7 +32,7 @@ spoofName       = Facebook CyberSecurity Team
 targetEmail     = None
 subject         = Facebook CyberSecurity Team: Authorization Email
 message         = Hi Peter, We have found that your account has been accessed by multiple accounts. 
-		  Do you want us to do a securty check, if yes, we need you to authorize your account so we can
+		  Do you want us to do a security check, if yes, we need you to authorize your account so we can
 		  have a look.
 		  
 		   
