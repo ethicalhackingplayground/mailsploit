@@ -24,7 +24,11 @@ Then run,
 
 **You will be prompt to paste in a link, to do this just upload it to a free file hosting server, copy the link and paste it.**
 **You can also use a phishing site created from the social engineering toolkit.**
+
+### Some Useful Links
 [https://nofile.io/  ](https://nofile.io/  )
+[https://github.com/trustedsec/social-engineer-toolkit](https://github.com/trustedsec/social-engineer-toolkit)
+
 
 You will be able to upload any files.
 
