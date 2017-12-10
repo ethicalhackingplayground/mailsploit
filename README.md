@@ -23,7 +23,7 @@ Then run,
 > python mailsploit.py
 
 **You will be prompt to paste in a link, to do this just upload it to a free file hosting server, copy the link and paste it.**
-**You can also use a phishing site created from the social engineering toolkit.***
+**You can also use a phishing site created from the social engineering toolkit.**
 [https://nofile.io/  ](https://nofile.io/  )
 
 You will be able to upload any files.
