@@ -26,8 +26,8 @@ Then run,
 **You can also use a phishing site created from the social engineering toolkit.**
 
 ### Some Useful Links
-[https://nofile.io/  ](https://nofile.io/  )
-[https://github.com/trustedsec/social-engineer-toolkit](https://github.com/trustedsec/social-engineer-toolkit)
+* [https://nofile.io/  ](https://nofile.io/  )
+* [https://github.com/trustedsec/social-engineer-toolkit](https://github.com/trustedsec/social-engineer-toolkit)
 
 
 You will be able to upload any files.
