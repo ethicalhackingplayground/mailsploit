@@ -34,3 +34,5 @@ Then run,
 You will be able to upload any files.
 
 happy hacking. ;)
+
+## Remember this cannot be used for illegal activties, I'm not to blame if you get into trouble
