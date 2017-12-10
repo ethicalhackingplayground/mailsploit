@@ -10,7 +10,7 @@ Kali Linux has it already installed.
 https://www.metasploit.com/
 
 
-### Install
+### How to Install
 
 > sh setup.sh
 
