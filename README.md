@@ -1,8 +1,8 @@
 # mailsploit v1.1
 Sends some one a malicious payload through smtp and starts a listener with metasploit.
 
-## MailSploit Now Supports Email Spoofing.
-## MailSplout Can Now Send Malicious Links To FB Messenger Accounts
+### MailSploit Now Supports Email Spoofing.
+### MailSploit Can Now Send Malicious Links To FB Messenger Accounts
 
 ### Requirements
 You need to have metasploit installed in order for this to work.
