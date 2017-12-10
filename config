@@ -10,8 +10,11 @@ password   = None
 ##################
 ### Mail stuff ###
 ##################
-spoofName       = None
-targetName      = None
-targetEmail     = None 
-subject         = This is so funny
-message         = I think I know you from school, This is so funny check this out, you will laugh so hard.
+spoofName       = Facebook CyberSecurity Team
+targetEmail     = None
+subject         = Facebook CyberSecurity Team: Authorization Email
+message         = Hi Peter, We have found that your account has been access by multiple accounts. 
+		  Do you want us to do a securty check, if yes, we need you to authorize your account so we can
+		  have a look.
+		  
+		   
