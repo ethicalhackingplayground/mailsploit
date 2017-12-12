@@ -107,6 +107,9 @@ def setup ():
 				isUsingMessenger = True
 				sendToMessenger()
 
+#
+# Sends a malicious message through to FB Messenger.
+#
 def sendToMessenger():
 
 	client = Client(fbusername, fbpassword)
@@ -181,7 +184,9 @@ def connect():
 		color_print("\n[!] Could not connect to the server.", color='red')
 		return
 
-
+#
+# Grabs the malicious link
+#
 def getLink ():
 	# Tell the user to upload there file.
 	color_print("Upload it to a free file hosting website: https://nofile.io/", color='yellow')
@@ -191,6 +196,10 @@ def getLink ():
 	while len(link) == 0: link = raw_input("Paste the link to your file: ")
 	return link
 
+
+#
+# Sends a malicious email
+#
 def sendEmail (server, fromAddr, toAddr, spoofName, subject, message):
 
 	# Get the link
