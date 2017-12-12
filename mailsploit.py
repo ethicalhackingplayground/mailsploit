@@ -4,8 +4,8 @@
 # Title: mailsploit.py
 # Author: Th3J0k3r
 #
-# Purpose: to be able to send a malicious link via email
-# to gain access to someones machine.
+# Purpose: to be able to send a malicious link via email or 
+# facebook to gain access to someones machine or account.
 #
 ############################################################
 import socket
