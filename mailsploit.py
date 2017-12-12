@@ -92,7 +92,7 @@ def setup ():
 
 			# Validate the input.
 			if (spoofName == 'None' or email == 'None' or password == 'None' or targetEmail == 'None'):
-				color_print('[!] Please setup your config file.', color='red')	
+				color_print('[!] Please setup your config file for mail attacks.', color='red')	
 				return
 			else:
 				# Connects to the server.
@@ -101,7 +101,7 @@ def setup ():
 		else:
 			# Validate the input.
 			if (fbusername == 'None' or fbpassword == 'None' or fbmessage == 'None' or fbuserID == 'None'):
-				color_print('[!] Please setup your config file.', color='red')	
+				color_print('[!] Please setup your config file for facebook messenger attacks', color='red')	
 				return
 			else:
 				isUsingMessenger = True
