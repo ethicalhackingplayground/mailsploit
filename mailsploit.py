@@ -57,7 +57,7 @@ def setup ():
 
 	# Setup the config file
 	global targetEmail
-	global spoofName
+	#global spoofName
 	#global email
 	#global password
 	global subject
@@ -72,7 +72,7 @@ def setup ():
 	configParser = ConfigParser.RawConfigParser()	
 	configParser.read('config')
 	targetEmail = configParser.get('Config', 'targetEmail')
-	spoofName  = configParser.get('Config', 'spoofName')
+	#spoofName  = configParser.get('Config', 'spoofName')
 	#email    = configParser.get('Config', 'email')
 	#password = configParser.get('Config', 'password')
 	subject = configParser.get('Config', 'subject')
