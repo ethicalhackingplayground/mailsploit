@@ -171,13 +171,12 @@ def sendMailUsingMechanize():
 
 	# Get the link
 	link = getLink()
-	# Create the specially crafted link.
-	html = '<a href="'+link+'">'+link+'</a>'
+
 
 	br.select_form(nr=0)
 	br.form['to'] = targetEmail
 	br.form['subject'] = subject
-	br.form['text'] = message + '\n\n' + html
+	br.form['text'] = message + '\n\n' + link
 	# attempt to connect to the stmp server.
 	try:
 			
