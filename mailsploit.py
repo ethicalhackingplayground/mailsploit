@@ -92,7 +92,7 @@ def setup ():
 			global isUsingMessenger
 
 			# Validate the input.
-			if (spoofName == 'None' or targetEmail == 'None'):
+			if (targetEmail == 'None'):
 				color_print('[!] Please setup your config file.', color='red')	
 				return
 			else:
