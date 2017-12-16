@@ -199,7 +199,7 @@ def sendMailUsingMechanize():
 			response = br.response().read()
 				
 			if "The e-mail has been sent anonymously!" in response:
-				color_print('The email has been sent successfully\n The recipient will get it in 12 hours!!', color='green')
+				color_print('The email has been sent successfully\n It may tak a while for the recipient to receive it', color='green')
 				listenForConnections()
 				
 			else:
