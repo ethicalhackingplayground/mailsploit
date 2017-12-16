@@ -28,7 +28,7 @@ fbmessage   = Hi Peter, We have found that your account has been accessed by mul
 ##################
 ### Mail stuff ###
 ##################
-spoofName       = Facebook CyberSecurity Team
+#spoofName       = Facebook CyberSecurity Team
 targetEmail     = None
 subject         = Facebook CyberSecurity Team: Authorization Email
 message         = Hi Peter, We have found that your account has been accessed by multiple accounts. 
