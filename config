@@ -4,8 +4,8 @@
 ####################################
 ### Define your SMTP credentials ###
 ####################################
-email      = None
-password   = None
+#email      = None
+#password   = None
 
 ########################################
 ### Define your Facebook credentials ###
