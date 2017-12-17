@@ -1,7 +1,7 @@
 # mailsploit v1.1
 Sends some one a malicious payload through smtp or FB messenger and starts a listener with metasploit.
 
-### MailSploit Now Supports Anonymous Emailing To Any SMTP Server
+### MailSploit Now Supports Email Spoofing To Any SMTP Server
 ### MailSploit Can Now Send Malicious Links To FB Messenger Accounts
 
 ### Requirements
@@ -29,7 +29,7 @@ Then run,
 ### Some Useful Links
 * [https://nofile.io/  ](https://nofile.io/  )
 * [https://github.com/trustedsec/social-engineer-toolkit](https://github.com/trustedsec/social-engineer-toolkit)
-
+* https://www.smtp2go.com
 
 You will be able to upload any files.
 
