@@ -8,7 +8,8 @@ Sends some one a malicious payload through smtp or FB messenger and starts a lis
 You need to have metasploit installed in order for this to work.
 Kali Linux has it already installed.
 
-https://www.metasploit.com/
+* https://www.metasploit.com/
+* Create an account with - https://www.smtp2go.com
 
 
 ### How to Install
@@ -29,7 +30,6 @@ Then run,
 ### Some Useful Links
 * [https://nofile.io/  ](https://nofile.io/  )
 * [https://github.com/trustedsec/social-engineer-toolkit](https://github.com/trustedsec/social-engineer-toolkit)
-* https://www.smtp2go.com
 
 You will be able to upload any files.
 
