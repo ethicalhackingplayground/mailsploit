@@ -1,16 +1,21 @@
 [Config]
 
 
-####################################
-### Define your SMTP credentials ###
-####################################
-#email      = None
-#password   = None
+###########################################
+### Define your SMTPGO SMTP credentials ###
+###########################################
+#
+# Setup an account at http://www.smtp2go.com/‎
+#
+###########################################
+smtpGoEmail      = None
+smtpGoPass       = None
+smtpGoServer     = mail.smtp2go.com:2525
 
 ########################################
 ### Define your Facebook credentials ###
 ########################################
-fbusername   = None
+fbusername   = None	
 fbpassword   = None
 
 ######################
@@ -18,7 +23,7 @@ fbpassword   = None
 ######################
 fbuser      = None
 fbuserID    = None
-fbmessage   = Hi Peter, We have found that your account has been accessed by multiple accounts.
+fbmessage   = Hi John, We have found that your account has been accessed by multiple accounts.
               Do you want us to do a security check, if yes, we need you to authorize your account so we can
               have a look.
 
@@ -28,10 +33,16 @@ fbmessage   = Hi Peter, We have found that your account has been accessed by mul
 ##################
 ### Mail stuff ###
 ##################
-#spoofName       = Facebook CyberSecurity Team
+# Make sure this stays in this format.
+goodByeName     = Yours sincerely,<br>Peter</br>
+#######################################################################
+spoofEmail      = facebook-non-reply@gmail.com
 targetEmail     = None
 subject         = Facebook CyberSecurity Team: Authorization Email
-message         = Hi Peter, We have found that your account has been accessed by multiple accounts. 
+#######################################################################
+# Make sure this stays in this format.
+message         = <html>Hi Peter,<br></br> 
+		  We have found that your account has been accessed by multiple accounts. 
 		  Do you want us to do a security check, if yes, we need you to authorize your account so we can
 		  have a look.
 		  
