@@ -57,11 +57,14 @@ def banner ():
 def setup ():
 
 	# Setup the config file
+	global enabledSpoofing
 	global targetEmail
 	global spoofEmail
-	global smtpGoEmail
-	global smtpGoPass
+	global smtpEmail
+	global smtpPass
 	global smtpGoServer
+	global smtpServer
+	global smtpPort
 	global subject
 	global message
 	global goodByeName
@@ -74,10 +77,13 @@ def setup ():
 	configParser = ConfigParser.RawConfigParser()	
 	configParser.read('config')
 	targetEmail = configParser.get('Config', 'targetEmail')
+	enabledSpoofing = configParser.get('Config', 'enabledSpoofing')
 	spoofEmail  = configParser.get('Config', 'spoofEmail')
-	smtpGoEmail    = configParser.get('Config', 'smtpGoEmail')
-	smtpGoPass = configParser.get('Config', 'smtpGoPass')
+	smtpEmail    = configParser.get('Config', 'smtpEmail')
+	smtpPass = configParser.get('Config', 'smtpPass')
 	smtpGoServer = configParser.get('Config', 'smtpGoServer')
+	smtpServer = configParser.get('Config', 'smtpServer')
+	smtpPort = configParser.get('Config', 'smtpPort')
 	goodByeName = configParser.get('Config', 'goodByeName')
 	subject = configParser.get('Config', 'subject')
 	message = configParser.get('Config', 'message')
@@ -87,22 +93,41 @@ def setup ():
 	fbmessage = configParser.get('Config', 'fbmessage')
 	fbuserID = configParser.get('Config', 'fbuserID')
 
+	# Check if the message is greater than 10 characters
 	if len(message) >= 10:
 		
 		fb = raw_input("Did you want to send to facebook messenger: [Y/n] ")
 		if fb == 'No' or fb == 'n' or fb == 'no':
-				
-
+			
 			global isUsingMessenger
 
-			# Validate the input.
-			if (goodByeName == 'None' or targetEmail == 'None' or spoofEmail == 'None' or smtpGoEmail == 'None' or smtpGoPass == 'None' or smtpGoServer == 'None'):
-				color_print('[!] Please setup your config file. make sure you create an account at https://www.smtp2go.com', color='red')	
-				return
+			if (enabledSpoofing == 'True'):
+				
+
+				color_print("[+] Email spoofing enabled", color='green')
+
+				# Validate the input.
+				if (goodByeName == 'None' or targetEmail == 'None' or spoofEmail == 'None' or smtpEmail == 'None' or smtpPass == 'None' or smtpGoServer == 'None'):
+					color_print('[!] Please setup your config file. make sure you create an account at https://www.smtp2go.com', color='red')	
+					return
+				else:
+					# Connects to the server.
+					isUsingMessenger = False
+					sendMail(smtpGoServer, targetEmail, spoofEmail, smtpGoEmail, smtpGoPass, subject, message, goodByeName)
+
 			else:
-				# Connects to the server.
-				isUsingMessenger = False
-				sendMail(smtpGoServer, targetEmail, spoofEmail, smtpGoEmail, smtpGoPass, subject, message, goodByeName)
+
+			
+				color_print("[+] Email spoofing false", color='red')
+
+				# Validate the input.
+				if (goodByeName == 'None' or targetEmail == 'None' or spoofEmail == 'None' or smtpEmail == 'None' or smtpPass == 'None' or smtpServer == 'None' or smtpPort == 'None'):
+					color_print('[!] Please setup your config file', color='red')	
+					return
+				else:
+					# Connects to the server.
+					isUsingMessenger = False
+					sendMail(smtpServer, targetEmail, smtpEmail, smtpEmail, smtpPass, subject, message, goodByeName)
 		else:
 			# Validate the input.
 			if (fbusername == 'None' or fbpassword == 'None' or fbmessage == 'None' or fbuserID == 'None'):
@@ -112,6 +137,10 @@ def setup ():
 				isUsingMessenger = True
 				sendToMessenger()
 
+	else:
+		color_print("[!] Please type in a longer message", color='red')
+		return
+		
 def sendToMessenger():
 
 	client = Client(fbusername, fbpassword)
@@ -157,12 +186,9 @@ def sendToMessenger():
 #
 # Connects to the smtp server.
 #
-def sendMail(server, toAddr, spoofAddr, username, password, subject, message, goodBye):
+def sendMail(server, toAddr, address, username, password, subject, message, goodBye):
 	# attempt to connect to the stmp server.
 	try:
-			
-		# Create the yagmail object
-		#yag = yagmail.SMTP({email:spoofName}, password)
 
 		try:
 
@@ -171,7 +197,7 @@ def sendMail(server, toAddr, spoofAddr, username, password, subject, message, go
 			# Print out a thew important messages.
 			color_print("[+] Sending email to.. " + toAddr, color='blue')
 			time.sleep(2)
-			color_print("[+] Spoofing email.. " + spoofAddr, color='blue')
+			color_print("[+] Spoofing email.. " + address, color='blue')
 			time.sleep(2)
 			color_print("[*] Sending malicious link..", color='yellow')
 			time.sleep(1)
@@ -185,12 +211,10 @@ def sendMail(server, toAddr, spoofAddr, username, password, subject, message, go
 </html>""")
 			MessageFile.close()
 			# Send the mail.
-			os.system("sendemail -f " + spoofAddr + " -t " + toAddr + " -u " + subject + " -o message-content-type=html -o message-file=message.html " + " -xu " + username + " -xp " + password + " -s " + server)		
+			os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html -o message-file=message.html " + " -xu " + username + " -xp " + password + " -s " + server)		
 			listenForConnections()
 		except KeyboardInterrupt:
 			color_print("Thanks, Happy hacking", color='blue')
-		
-			#color_print("[+] Connected.", color='green')
 
 	except socket.gaierror:
 		# Failed to connect!!.
@@ -264,66 +288,66 @@ def listenForConnections ():
 		#	generateMailReport(fromAddr, toAddr, spoofName, subject, message, html)
 		#else:
 		#	generateMessengerReport(fbuser, fbuserID, fbmessage, link)
-		color_print("\nThanks, Happy hacking", color='blue')
+		#color_print("\nThanks, Happy hacking", color='blue')
 		return	
 
 
 # Generate a html report
-#def generateMessengerReport(fbuser, fbuserID, message, link):		
-#		f = open("reports/" + fbuser + ".html", "w")
-#		f.write("""
-#<!DOCTYPE html>
-#<html>
-#<div style="display: flex; justify-content: center;">
-#  <img src='"""+user.photo+"""' style="width: 40px; height: 40px;" />
-#</div>
-#<body style="background-color:white;">
-#<title> MailSpoof Report </title>
-#<table style="width:100%">
-#  <tr>
-#    <th>User</th>
-#    <th>ID</th> 
-#    <th>Message</th>
-#    <th>Link</th>
-#  </tr>
-#  <tr>
-#    <td>""" + str(fbuser) +"""</td>
-#    <td>""" + str(fbuserID) +"""</td>
-#    <td>""" + str(message) +"""</td>
-#    <td><a href='""" + str(link) + """'>"""+link+"""</a></td>
-#  </tr>
-#</table>
-#</html>""")
-#		f.close()	
+def generateMessengerReport(fbuser, fbuserID, message, link):		
+		f = open("reports/" + fbuser + ".html", "w")
+		f.write("""
+<!DOCTYPE html>
+<html>
+<div style="display: flex; justify-content: center;">
+  <img src='"""+user.photo+"""' style="width: 40px; height: 40px;" />
+</div>
+<body style="background-color:white;">
+<title> MailSpoof Report </title>
+<table style="width:100%">
+  <tr>
+    <th>User</th>
+    <th>ID</th> 
+    <th>Message</th>
+    <th>Link</th>
+  </tr>
+  <tr>
+    <td>""" + str(fbuser) +"""</td>
+    <td>""" + str(fbuserID) +"""</td>
+    <td>""" + str(message) +"""</td>
+    <td><a href='""" + str(link) + """'>"""+link+"""</a></td>
+  </tr>
+</table>
+</html>""")
+		f.close()	
 
 # Generate a html report
-#def generateMailReport(fromemail, toemail, spoofemail, subject, message, link):		
-#		f = open("reports/" + toemail + ".html", "w")
-#		f.write("""
-#<!DOCTYPE html>
-#<html>
-#<body style="background-color:white;">
-#<title> MailSpoof Report </title>
-#<table style="width:100%">
-#  <tr>
-#    <th>From Email</th>
-#    <th>To Email</th> 
-#    <th>Spoofed Email</th>
-#    <th>Subject</th>
-#    <th>Message</th>
-#    <th>Link</th>
-#  </tr>
-#  <tr>
-#    <td>""" + str(fromemail) +"""</td>
-#    <td>""" + str(toemail) +"""</td>
-#    <td>""" + str(spoofemail) +"""</td>
-#    <td>""" + str(subject) +"""</td>
-#    <td>""" + str(message) +"""</td>
-#    <td>""" + str(link) + """</td>
-#  </tr>
-#</table>
-#</html>""")
-#		f.close()
+def generateMailReport(fromemail, toemail, spoofemail, subject, message, link):		
+		f = open("reports/" + toemail + ".html", "w")
+		f.write("""
+<!DOCTYPE html>
+<html>
+<body style="background-color:white;">
+<title> MailSpoof Report </title>
+<table style="width:100%">
+  <tr>
+    <th>From Email</th>
+    <th>To Email</th> 
+    <th>Spoofed Email</th>
+    <th>Subject</th>
+    <th>Message</th>
+    <th>Link</th>
+  </tr>
+  <tr>
+    <td>""" + str(fromemail) +"""</td>
+    <td>""" + str(toemail) +"""</td>
+    <td>""" + str(spoofemail) +"""</td>
+    <td>""" + str(subject) +"""</td>
+    <td>""" + str(message) +"""</td>
+    <td>""" + str(link) + """</td>
+  </tr>
+</table>
+</html>""")
+		f.close()
 	
 
 #### Call the methods ####
