@@ -218,7 +218,7 @@ def sendMail(server, toAddr, address, username, password, subject, message, good
 				 	color_print("[+] Loading custom HTML Message", color='green')
 					CustomHTML = open(customHTML, 'r')
 					# Send the mail.
-					os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html tls=yes -o message-file -o tls=yes" + customHTML + " -xu " + username + " -xp " + password + " -s " + server)		
+					os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html tls=yes -o message-file -o tls=yes" + customHTML + " -xu " + username + " -xp " + password + " -s " + server + " -o tls=yes")		
 					listenForConnections()
 				else:
 					color_print("[!] Custom HTML Does not exists!!", color='red')
@@ -238,7 +238,7 @@ def sendMail(server, toAddr, address, username, password, subject, message, good
 	</html>""")
 				MessageFile.close()
 				# Send the mail.
-				os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html tls=yes -o message-file=message.html -o tls=yes" + " -xu " + username + " -xp " + password + " -s " + server)		
+				os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html tls=yes -o message-file=message.html -o tls=yes" + " -xu " + username + " -xp " + password + " -s " + server + " -o tls=yes")		
 				listenForConnections()
 		except KeyboardInterrupt:
 			color_print("\nThanks, Happy hacking", color='blue')
