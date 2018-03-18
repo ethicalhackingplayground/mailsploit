@@ -126,7 +126,7 @@ def setup ():
 					color_print("[+] Email spoofing false", color='red')
 
 					# Validate the input.
-					if (goodByeName == 'None' or targetEmail == 'None' or spoofEmail == 'None' or smtpEmail == 'None' or smtpPass == 'None' or smtpServer == 'None' or smtpPort == 'None'):
+					if (goodByeName == 'None' or targetEmail == 'None' or spoofEmail == 'None' or smtpEmail == 'None' or smtpPass == 'None' or smtpServer == 'None'):
 						color_print('[!] Please setup your config file', color='red')	
 						return
 					else:
