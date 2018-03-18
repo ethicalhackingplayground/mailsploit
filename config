@@ -46,7 +46,7 @@ goodByeName     = Yours sincerely,<br>Jack</br>
 #######################################################################
 
 #############################
-# Either Yes / False
+# Either True / False
 #############################
 enabledSpoofing = False
 
