@@ -207,11 +207,18 @@ def sendMail(server, toAddr, address, username, password, subject, message, good
 			
 			# Check if the user wants to load a custom html file
 			if (isCustomHTML == 'True'):
-			 	color_print("[+] Loading custom HTML Message", color='green')
-				CustomHTML = open(customHTML, 'r')
-				# Send the mail.
-				os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html -o message-file=" + customHTML + " -xu " + username + " -xp " + password + " -s " + server)		
-				listenForConnections()
+
+				# Only open a custom HTML file if it exists.
+				if (os.file.exists(customHTML)):
+
+				 	color_print("[+] Loading custom HTML Message", color='green')
+					CustomHTML = open(customHTML, 'r')
+					# Send the mail.
+					os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html -o message-file=" + customHTML + " -xu " + username + " -xp " + password + " -s " + server)		
+					listenForConnections()
+				else:
+					color_print("[!] Custom HTML Does not exists!!", color='red')
+					return
 			else:
 
 
