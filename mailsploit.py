@@ -47,7 +47,7 @@ def banner ():
                                           ||                             
                                          .||                             
                                               
-			 Mail Exploitation Framwork 
+			 Mail Exploitation Framework 
 				   v1.1                                                                        
 """, color='red')
 
