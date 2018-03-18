@@ -108,17 +108,20 @@ def setup ():
 
 				if (enabledSpoofing == 'True'):
 					
+					color_print("Make sure to sign up to https://www.smtp2go.com\nand setup the config file with the required information.", color='yellow')
+					smtpgo = raw_input("Have you setup a SMTPGO account and setup the config file properly: [Y/n] ")
+					if (smtpgo == 'Y' or smtpgo == 'y' or smtpgo == 'Yes' or smtpgo == 'yes'):
 
-					color_print("[+] Email spoofing enabled", color='green')
+						color_print("[+] Email spoofing enabled", color='green')
 
-					# Validate the input.
-					if (goodByeName == 'None' or targetEmail == 'None' or spoofEmail == 'None' or smtpEmail == 'None' or smtpPass == 'None' or smtpGoServer == 'None'):
-						color_print('[!] Please setup your config file. make sure you create an account at https://www.smtp2go.com', color='red')	
-						return
-					else:
-						# Connects to the server.
-						isUsingMessenger = False
-						sendMail(smtpGoServer, targetEmail, spoofEmail, smtpEmail, smtpPass, subject, message, goodByeName)
+						# Validate the input.
+						if (goodByeName == 'None' or targetEmail == 'None' or spoofEmail == 'None' or smtpEmail == 'None' or smtpPass == 'None' or smtpGoServer == 'None'):
+							color_print('[!] Please setup your config file. make sure you create an account at https://www.smtp2go.com', color='red')	
+							return
+						else:
+							# Connects to the server.
+							isUsingMessenger = False
+							sendMail(smtpGoServer, targetEmail, spoofEmail, smtpEmail, smtpPass, subject, message, goodByeName)
 
 				else:
 
