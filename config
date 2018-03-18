@@ -18,8 +18,7 @@ smtpGoServer     = mail.smtp2go.com:2525
 ### Define your SMTP Credentials           ##
 ## Servers such as, Gmail, Yahoo, Outlook  ##
 #############################################
-smtpServer       = smtp.gmail.com
-smtpPort         = 587
+smtpServer       = smtp.gmail.com:587
 
 ########################################
 ### Define your Facebook credentials ###
