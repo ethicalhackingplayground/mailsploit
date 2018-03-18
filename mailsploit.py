@@ -221,7 +221,7 @@ def sendMail(server, toAddr, address, username, password, subject, message, good
 				 	color_print("[+] Loading custom HTML Message", color='green')
 					CustomHTML = open(customHTML, 'r')
 					# Send the mail.
-					os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html -o message-file " + customHTML + " -xu " + username + " -xp " + password + " -s " + server + " -o tls=yes")		
+					os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html -o message-file=" + customHTML + " -xu " + username + " -xp " + password + " -s " + server + " -o tls=yes")		
 					listenForConnections()
 				else:
 					color_print("[!] Custom HTML Does not exists!!", color='red')
