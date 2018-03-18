@@ -1,16 +1,25 @@
 [Config]
 
+#########################
+# SMTP Credentials
+#########################
+smtpEmail      = None
+smtpPass       = None
 
-###########################################
-### Define your SMTPGO SMTP credentials ###
+
 ###########################################
 #
 # Setup an account at http://www.smtp2go.com/‎
 #
 ###########################################
-smtpGoEmail      = None
-smtpGoPass       = None
 smtpGoServer     = mail.smtp2go.com:2525
+
+#############################################
+### Define your SMTP Credentials           ##
+## Servers such as, Gmail, Yahoo, Outlook  ##
+#############################################
+smtpServer       = smtp.gmail.com
+smtpPort         = 587
 
 ########################################
 ### Define your Facebook credentials ###
@@ -36,11 +45,28 @@ fbmessage   = Hi John, We have found that your account has been accessed by mult
 # Make sure this stays in this format.
 goodByeName     = Yours sincerely,<br>Peter</br>
 #######################################################################
+#
+# Either Yes / False
+#
+enabledSpoofing = False
+#
+# The Spoofed email address,
+# This might come up as spam.
+#
 spoofEmail      = facebook-non-reply@gmail.com
+#
+# The target email address.
+#
 targetEmail     = None
+#
+# The subjects
+#
 subject         = Facebook CyberSecurity Team: Authorization Email
 #######################################################################
 # Make sure this stays in this format.
+#
+# Must be greater than 10 characters
+#
 message         = <html>Hi Peter,<br></br> 
 		  We have found that your account has been accessed by multiple accounts. 
 		  Do you want us to do a security check, if yes, we need you to authorize your account so we can
