@@ -42,7 +42,7 @@ fbmessage   = Hi John, We have found that your account has been accessed by mult
 ### Mail stuff ###
 ##################
 # Make sure this stays in this format.
-goodByeName     = Yours sincerely,<br>Peter</br>
+goodByeName     = Yours sincerely,<br>Jack</br>
 #######################################################################
 
 #############################
