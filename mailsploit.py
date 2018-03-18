@@ -213,7 +213,7 @@ def sendMail(server, toAddr, address, username, password, subject, message, good
 			if (isCustomHTML == 'True'):
 
 				# Only open a custom HTML file if it exists.
-				if (os.file.exists(customHTML)):
+				if (os.path.isfile(customHTML)):
 
 				 	color_print("[+] Loading custom HTML Message", color='green')
 					CustomHTML = open(customHTML, 'r')
