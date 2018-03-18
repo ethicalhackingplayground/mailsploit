@@ -35,4 +35,5 @@ You will be able to upload any files.
 
 happy hacking. ;)
 
-### Remember this cannot be used for illegal activities, I'm not to blame if you get into trouble
+### Remember:
+### This cannot be used for illegal activities, I'm not to blame if you get into trouble
