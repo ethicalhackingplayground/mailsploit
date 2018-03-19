@@ -64,10 +64,13 @@ spoofEmail      = facebook-non-reply@gmail.com
 targetEmail     = None
 
 
-#############################
-#    File Attachment
-############################
+#################################################
+#              File Attachment
+#              --------------
+# Email Providers will block suspicious files 
+#################################################
 attachment      = None
+
 
 
 
