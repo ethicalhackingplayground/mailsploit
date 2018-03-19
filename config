@@ -94,7 +94,7 @@ message         = <html>Hi Peter,<br></br>
 #####################################
 # Custom HTML Message
 #####################################
-isCustomHTML    = True
+isCustomHTML    = False
 customHTML      = message.html
 		  
 		   
