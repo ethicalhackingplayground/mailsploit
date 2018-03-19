@@ -64,6 +64,12 @@ spoofEmail      = facebook-non-reply@gmail.com
 targetEmail     = None
 
 
+#############################
+#    File Attachment
+############################
+attachment      = None
+
+
 
 #######################################################################
 #                        The subject
