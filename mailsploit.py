@@ -261,13 +261,11 @@ def sendMail(server, toAddr, address, username, password, subject, message, good
 					# Send the mail.
 					os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html -o message-file=" + customHTML + " -xu " + username + " -xp " + password + " -s " + server + " -o tls=yes")		
 					listenForConnections()
-					CustomHTML.close()
 				else:
 					color_print("[+] Sending attachment", color='green')
 					# Send the mail
                                         os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -a " + attachment + " -o message-content-type=html -o message-file=" + customHTML + " -xu " + username + " -xp " + password + " -s " + server + " -o tls=yes")
                                         listenForConnections()
-					CustomHTML.close()
 
 		except KeyboardInterrupt:
 			color_print("\nThanks, Happy hacking", color='blue')
