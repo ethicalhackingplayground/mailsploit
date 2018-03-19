@@ -282,7 +282,7 @@ def getLink ():
 	color_print("Upload it to a free file hosting website: https://nofile.io/", color='yellow')
 	color_print("OR Paste in the IP Address of your malicious server", color='yellow')
 	time.sleep(2)
-	link = raw_input("\nPaste the link to your file: \n")		
+	link = raw_input("\nPaste your malicious link: \n")		
 	while len(link) == 0: link = raw_input("Paste the link to your file: ")
 	return link
 
