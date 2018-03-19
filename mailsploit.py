@@ -283,7 +283,7 @@ def getLink ():
 	color_print("OR Paste in the IP Address of your malicious server", color='yellow')
 	time.sleep(2)
 	link = raw_input("\nPaste your malicious link: \n")		
-	while len(link) == 0: link = raw_input("Paste the link to your file: ")
+	while len(link) == 0: link = raw_input("Paste your malicious link: ")
 	return link
 
 #def sendEmail (server, fromAddr, toAddr, spoofName, subject, message):
