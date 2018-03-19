@@ -8,13 +8,6 @@
 # to gain access to someones machine.
 #
 ############################################################
-#from email.MIMEText import MIMEText
-#from email.MIMEMultipart import MIMEMultipart
-#from email.MIMEBase import MIMEBase
-#from email.utils import COMMASPACE,formatdate
-#import yagmail
-#import smtplib
-#import email
 import subprocess
 import socket
 import ConfigParser
